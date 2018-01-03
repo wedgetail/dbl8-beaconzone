@@ -24,6 +24,7 @@ const ReadersSchema = new SimpleSchema({
     type: String,
     label: 'The serial number for the reader.',
   },
+
   macAddress: {
     type: String,
     label: 'The mac address for the reader.',
