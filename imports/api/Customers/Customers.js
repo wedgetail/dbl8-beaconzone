@@ -19,19 +19,20 @@ const CustomersSchema = new SimpleSchema({
   users: {
     type: Array,
     label: 'Users who have access to this customer.',
+    defaultValue: [],
   },
-  'users.$': {
-    type: Object,
-    label: 'A user who has access to this customer.',
-  },
-  'users.$.userId': {
-    type: Object,
-    label: 'The _id of the user who has access to this customer.',
-  },
-  'users.$.isAdmin': {
-    type: Boolean,
-    label: 'Is the user an admin for this customer?',
-  },
+    'users.$': {
+      type: Object,
+      label: 'A user who has access to this customer.',
+    },
+      'users.$.userId': {
+        type: String,
+        label: 'The _id of the user who has access to this customer.',
+      },
+      'users.$.isAdmin': {
+        type: Boolean,
+        label: 'Is the user an admin for this customer?',
+      },
   name: {
     type: String,
     label: 'The name of the customer.',

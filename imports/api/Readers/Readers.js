@@ -16,9 +16,9 @@ Readers.deny({
 });
 
 const ReadersSchema = new SimpleSchema({
-  owner: {
+  customer: {
     type: String,
-    label: 'The ID of the owner of this reader.',
+    label: 'The ID of the customer who owns this reader.',
   },
   serialNumber: {
     type: String,
