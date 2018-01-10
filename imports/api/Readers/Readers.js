@@ -28,11 +28,7 @@ const ReadersSchema = new SimpleSchema({
   macAddress: {
     type: String,
     label: 'The mac address for the reader.',
-  },
-  alias: {
-    type: String,
-    label: 'The human-readable name for this reader.',
-  },
+  }
 });
 
 Readers.attachSchema(ReadersSchema);
