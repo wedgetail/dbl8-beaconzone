@@ -22,6 +22,7 @@ class NewCustomer extends React.Component {
   	  } else {
   	  	console.log(customerId);
   	    Bert.alert('Customer created!', 'success');
+        this.props.history.push(`/admin/customers/${customerId}`);
   	  }
   	});
   }

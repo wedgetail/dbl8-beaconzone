@@ -1,4 +1,5 @@
 import '../../api/Customers/methods';
+import '../../api/Customers/server/publications';
 
 import '../../api/Documents/server/publications';
 
