@@ -37,6 +37,38 @@ const CustomersSchema = new SimpleSchema({
     type: String,
     label: 'The name of the customer.',
   },
+  contact: {
+    type: String,
+    label: 'Primary contact name for the customer.',
+  },
+  address: {
+    type: String,
+    label: 'Address for the customer.',
+  },
+  city: {
+    type: String,
+    label: 'City for the customer.',
+  },
+  state: {
+    type: String,
+    label: 'State for the customer.',
+  },
+  zip: {
+    type: String,
+    label: 'Zip for the customer.',
+  },
+  mobile: {
+    type: String,
+    label: 'Mobile number for the customer.',
+  },
+  telephone: {
+    type: String,
+    label: 'Telephone number for the customer.',
+  },
+  email: {
+    type: String,
+    label: 'General email for the customer.',
+  },
 });
 
 Customers.attachSchema(CustomersSchema);

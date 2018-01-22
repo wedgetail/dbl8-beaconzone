@@ -4,6 +4,7 @@ import { Tabs, Tab, ControlLabel, Row, Col, Button, FormGroup } from 'react-boot
 import { withTracker } from 'meteor/react-meteor-data';
 import Customers from '../../../api/Customers/Customers';
 import validate from '../../../modules/validate';
+import CustomerForm from '../../components/CustomerForm/CustomerForm';
 
 class ManageCustomer extends React.Component {
   constructor(props) {
@@ -50,102 +51,7 @@ class ManageCustomer extends React.Component {
 
       <Tabs animation={false}>
 		  <Tab eventKey="customer" title="Customer">
-			  <form ref={editCustomerForm => (this.editCustomerForm = editCustomerForm)} onSubmit={(event) => event.preventDefault()}>
-				  <h4 className="page-header">Customer Contact Details</h4>
-				  <FormGroup>
-
-					  <ControlLabel>Customer Name</ControlLabel>
-					  <input
-						  className="form-control"
-						  name="customerName"
-						  ref={customerName => (this.customerName = customerName)}
-					  />
-					  <ControlLabel>Contact</ControlLabel>
-					  <input
-						  className="form-control"
-						  name="customerContact"
-						  ref={customerContact => (this.customerContact = customerContact)}
-						  className="form-control"
-						  placeholder="Contact Name"
-					  />
-
-					  <ControlLabel>Address</ControlLabel>
-					  <input
-						  className="form-control"
-						  name="customerAddress"
-						  ref={customerAddress => (this.customerAddress = customerAddress)}
-						  className="form-control"
-						  placeholder="Address"
-					  />
-					  <Row>
-						  <Col xs={4}>
-							  <ControlLabel>City</ControlLabel>
-							  <input
-								  type="text"
-								  name="customerCity"
-								  ref={customerCity => (this.customerCity = customerCity)}
-								  className="form-control"
-								  placeholder="City"
-							  />
-						  </Col>
-						  <Col xs={4}>
-							  <ControlLabel>State</ControlLabel>
-							  <input
-								  type="text"
-								  name="customerState"
-								  ref={customerState => (this.customerState = customerState)}
-								  className="form-control"
-								  placeholder="State"
-							  />
-						  </Col>
-						  <Col xs={4}>
-							  <ControlLabel>Zip</ControlLabel>
-							  <input
-								  type="text"
-								  name="customerZip"
-								  ref={customerZip => (this.customerZip = customerZip)}
-								  className="form-control"
-								  placeholder="Zip Code"
-							  />
-						  </Col>
-					  </Row>
-					  <Row>
-						  <Col xs={4}>
-							  <ControlLabel>Mobile</ControlLabel>
-							  <input
-								  type="text"
-								  name="customerMobile"
-								  ref={customerMobile => (this.customerMobile = customerMobile)}
-								  className="form-control"
-								  placeholder="Mobile"
-							  />
-						  </Col>
-						  <Col xs={4}>
-							  <ControlLabel>Telephone</ControlLabel>
-							  <input
-								  type="text"
-								  name="customerTelephone"
-								  ref={customerTelephone => (this.customerTelephone = customerTelephone)}
-								  className="form-control"
-								  placeholder="Telephone"
-							  />
-						  </Col>
-					  </Row>
-					  <Row>
-						  <Col xs={8}>
-							  <ControlLabel>Email</ControlLabel>
-							  <input
-								  type="text"
-								  name="customerEmail"
-								  ref={customerEmail => (this.customerEmail = customerEmail)}
-								  className="form-control"
-								  placeholder="Email"
-							  />
-						  </Col>
-					  </Row>
-				  </FormGroup>
-				  <Button type="submit" bsStyle="success">Save</Button>
-			  </form>
+		    <CustomerForm customer={customer} />
 		  </Tab>
 
 

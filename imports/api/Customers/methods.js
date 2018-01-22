@@ -12,6 +12,15 @@ Meteor.methods({
     	throw new Meteor.Error('500', exception);
     }
   },
-});
+  'customers.update': function customersUpdate(customer) {
+    check(customer, Object);
 
-// Customers.update({ _id: customerId }, { $addToSet: { users: user } })
+    try {
+    	const customerId = customer._id;
+    	delete customer._id;
+    	return Customers.update({ _id: customerId }, { $set: customer });
+    } catch (exception) {
+    	throw new Meteor.Error('500', exception);
+    }
+  },
+});
