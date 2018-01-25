@@ -6,6 +6,7 @@ import Customers from '../../../api/Customers/Customers';
 import CustomerForm from '../../components/CustomerForm/CustomerForm';
 import CustomerWifiForm from '../../components/CustomerWifiForm/CustomerWifiForm';
 import CustomerDataForm from '../../components/CustomerDataForm/CustomerDataForm';
+import CustomerReaderForm from '../../components/CustomerReaderForm/CustomerReaderForm';
 
 class ManageCustomer extends React.Component {
   constructor(props) {
@@ -29,7 +30,6 @@ class ManageCustomer extends React.Component {
     		  ssIds={customer && customer.ssIds}
     		 />
     	</Tab>
-
 		  <Tab eventKey="exportData" title="Data">
 		  	<CustomerDataForm
 		  		customerId={customer && customer._id}
@@ -39,16 +39,7 @@ class ManageCustomer extends React.Component {
 
 
 		  <Tab eventKey="readers" title="Readers">
-			  <h4 className="page-header">Readers Details</h4>
-			  <p>Need a way to add readers manually, one at a time would be fine.</p>
-			  <p>Need to be able to import Readers from a CSV file (select file dialog)</p>
-			  <p>-------------------------------------------</p>
-			  <p>Serial Number</p>
-			  <p>MAC Address</p>
-			  <p>Last Event Received</p>
-			  <p>-------------------------------------------</p>
-			  <p>We already have a collection of all readers, however this view only shows readers owned by the customer </p>
-			  <p>Search - Reader Serial Number - auto-filter</p>
+			  <CustomerReaderForm />
 		  </Tab>
 
 
