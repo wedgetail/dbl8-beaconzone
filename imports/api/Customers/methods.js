@@ -9,6 +9,7 @@ Meteor.methods({
     try {
     	return Customers.insert({ name: customerName });
     } catch (exception) {
+      console.warn(exception);
     	throw new Meteor.Error('500', exception);
     }
   },
@@ -20,6 +21,7 @@ Meteor.methods({
     	delete customer._id;
     	return Customers.update({ _id: customerId }, { $set: customer });
     } catch (exception) {
+      console.warn(exception);
     	throw new Meteor.Error('500', exception);
     }
   },

@@ -46,15 +46,33 @@ class CustomerForm extends React.Component {
     return (<div className="CustomerForm">
 			<form ref={editCustomerForm => (this.editCustomerForm = editCustomerForm)} onSubmit={(event) => event.preventDefault()}>
 			  <h4 className="page-header">Customer Contact Details</h4>
+			  <Row>
+			  	<Col xs={12} sm={8}>
+			  	  <FormGroup>
+						  <ControlLabel>Customer Name</ControlLabel>
+						  <input
+							  className="form-control"
+							  name="customerName"
+							  defaultValue={customer.name}
+							  ref={customerName => (this.customerName = customerName)}
+						  />
+						</FormGroup>
+			  	</Col>
+			  	<Col xs={12} sm={4}>
+			  	  <FormGroup>
+						  <ControlLabel>Topic Code</ControlLabel>
+						  <input
+						    disabled
+						    readOnly
+							  className="form-control"
+							  name="topicCode"
+							  defaultValue={customer.topicCode}
+							  ref={topicCode => (this.topicCode = topicCode)}
+						  />
+						</FormGroup>
+			  	</Col>
+			  </Row>
 			  <FormGroup>
-
-				  <ControlLabel>Customer Name</ControlLabel>
-				  <input
-					  className="form-control"
-					  name="customerName"
-					  defaultValue={customer.name}
-					  ref={customerName => (this.customerName = customerName)}
-				  />
 				  <ControlLabel>Contact</ControlLabel>
 				  <input
 					  className="form-control"

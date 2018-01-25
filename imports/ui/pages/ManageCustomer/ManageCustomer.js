@@ -3,45 +3,15 @@ import PropTypes from 'prop-types';
 import { Tabs, Tab, ControlLabel, Row, Col, Button, FormGroup } from 'react-bootstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 import Customers from '../../../api/Customers/Customers';
-import validate from '../../../modules/validate';
 import CustomerForm from '../../components/CustomerForm/CustomerForm';
+import CustomerWifiForm from '../../components/CustomerWifiForm/CustomerWifiForm';
+import CustomerDataForm from '../../components/CustomerDataForm/CustomerDataForm';
 
 class ManageCustomer extends React.Component {
   constructor(props) {
     super(props);
     // this.state = {};
     // this.thing = this.thing.bind(this);
-  }
-
-  componentDidMount() {
-  	const component = this;
-  	validate(this.wifiForm, {
-  		rules: {
-  			ssidOne: {
-  				required: true,
-  			},
-  			securityKeyOne: {
-  				required: true,
-  			},
-  		},
-  		messages: {
-  			ssidOne: {
-  				required: 'SSID #1 is required.',
-  			},
-  			securityKeyOne: {
-  				required: 'What\'s the security key for SSID #1?',
-  			},
-  		},
-  		submitHandler() {
-  			// Meteor.call('', {}, (error, response) => {
-  			//   if (error) {
-  			//     Bert.alert(error.reason, 'danger');
-  			//   } else {
-  			//     Bert.alert('', 'success');
-  			//   }
-  			// });
-  		},
-  	});
   }
 
   render() {
@@ -53,164 +23,18 @@ class ManageCustomer extends React.Component {
 		  <Tab eventKey="customer" title="Customer">
 		    <CustomerForm customer={customer} />
 		  </Tab>
-
-
-      	<Tab eventKey="wifi" title="Wi-Fi">
-      		<form ref={wifiForm => (this.wifiForm = wifiForm)} onSubmit={(event) => event.preventDefault()}>
-				<h4 className="page-header">SSID #1</h4>
-	      		<Row>
-	      			<Col xs={6}>
-	      				<ControlLabel>SSID</ControlLabel>
-	      				<input
-	      					type="text"
-	      					name="ssidOne"
-	      					ref={ssidOne => (this.ssidOne = ssidOne)}
-	      					className="form-control"
-	      					placeholder="Wi-Fi SSID"
-	      				/>
-	      			</Col>
-	      			<Col xs={6}>
-								<ControlLabel>Security Key</ControlLabel>
-								<input
-	      					type="text"
-	      					name="securityKeyOne"
-	      					ref={securityKeyOne => (this.securityKeyOne = securityKeyOne)}
-	      					className="form-control"
-	      					placeholder="Security Key"
-	      				/>
-	      			</Col>
-	      		</Row>
-	      		<h4 className="page-header">SSID #2</h4>
-	      		<Row>
-	      			<Col xs={6}>
-	      				<ControlLabel>SSID</ControlLabel>
-	      				<input
-	      					type="text"
-	      					name="ssidTwo"
-	      					ref={ssidTwo => (this.ssidTwo = ssidTwo)}
-	      					className="form-control"
-	      					placeholder="Wi-Fi SSID"
-	      				/>
-	      			</Col>
-	      			<Col xs={6}>
-								<ControlLabel>Security Key</ControlLabel>
-								<input
-	      					type="text"
-	      					name="securityKeyTwo"
-	      					ref={securityKeyTwo => (this.securityKeyTwo = securityKeyTwo)}
-	      					className="form-control"
-	      					placeholder="Security Key"
-	      				/>
-	      			</Col>
-	      		</Row>
-	      		<h4 className="page-header">SSID #3</h4>
-	      		<Row>
-	      			<Col xs={6}>
-	      				<FormGroup>
-		      				<ControlLabel>SSID</ControlLabel>
-		      				<input
-		      					type="text"
-		      					name="ssidThree"
-		      					ref={ssidThree => (this.ssidThree = ssidThree)}
-		      					className="form-control"
-		      					placeholder="Wi-Fi SSID"
-		      				/>
-		      			</FormGroup>
-	      			</Col>
-	      			<Col xs={6}>
-								<FormGroup>
-									<ControlLabel>Security Key</ControlLabel>
-									<input
-		      					type="text"
-		      					name="securityKeyThree"
-		      					ref={securityKeyThree => (this.securityKeyThree = securityKeyThree)}
-		      					className="form-control"
-		      					placeholder="Security Key"
-		      				/>
-		      			</FormGroup>
-	      			</Col>
-	      		</Row>
-	      		<Button type="submit" bsStyle="success">Save</Button>
-      		</form>
-      	</Tab>
+    	<Tab eventKey="wifi" title="Wi-Fi">
+    		<CustomerWifiForm
+    		  customerId={customer && customer._id}
+    		  ssIds={customer && customer.ssIds}
+    		 />
+    	</Tab>
 
 		  <Tab eventKey="exportData" title="Data">
-			  <form ref={editExportData => (this.editExportData = editExportData)} onSubmit={(event) => event.preventDefault()}>
-			  <h4 className="page-header">Data Delivery Method</h4>
-			  <FormGroup>
-
-				  <Row>
-					  <Col xs={2}>
-						  <ControlLabel>Connection Type</ControlLabel>(HTTP, WebSocket, MQTT)
-				  <input
-					  type="text"
-					  name="connectionType"
-					  ref={connectionType => (this.connectionType = connectionType)}
-					  className="form-control"
-					  placeholder="Connection Type"
-				  />
-						  </Col>
-					  </Row>
-
-				  <Row>
-					  <Col xs={4}>
-						  <ControlLabel>Host</ControlLabel>
-						  <input
-							  type="text"
-							  name="connectionHost"
-							  ref={connectionHost => (this.connectionHost = connectionHost)}
-							  className="form-control"
-							  placeholder="Host"
-						  />
-					  </Col>
-					  <Col xs={4}>
-						  <ControlLabel>Port</ControlLabel>
-						  <input
-							  type="text"
-							  name="connectionPort"
-							  ref={connectionPort => (this.connectionPort = connectionPort)}
-							  className="form-control"
-							  placeholder="Port"
-						  />
-					  </Col>
-					  <Col xs={4}>
-						  <ControlLabel>Topic</ControlLabel>
-						  <input
-							  type="text"
-							  name="connectionTopic"
-							  ref={connectionTopic => (this.connectionTopic = connectionTopic)}
-							  className="form-control"
-							  placeholder="Topic"
-						  />
-					  </Col>
-				  </Row>
-				  <Row>
-					  <Col xs={4}>
-						  <ControlLabel>Username (optional)</ControlLabel>
-						  <input
-							  type="text"
-							  name="connectionUsername"
-							  ref={mqttUsername => (this.mqttUsername = mqttUsername)}
-							  className="form-control"
-							  placeholder="Username"
-						  />
-					  </Col>
-					  <Col xs={4}>
-						  <ControlLabel>Password (optional)</ControlLabel>
-						  <input
-							  type="text"
-							  name="connectionPassword"
-							  ref={connectionPassword => (this.connectionPassword = connectionPassword)}
-							  className="form-control"
-							  placeholder="Password"
-						  />
-					  </Col>
-				  </Row>
-
-			  </FormGroup>
-			  <Button type="submit" bsStyle="success">Save</Button>
-		  </form>
-
+		  	<CustomerDataForm
+		  		customerId={customer && customer._id}
+		  		dataDelivery={customer && customer.dataDelivery}
+		  	/>
 		  </Tab>
 
 

@@ -15,7 +15,6 @@ class NewCustomer extends React.Component {
 
   handleCreateNewCustomer() {
   	const customerName = this.customerName.value;
-
   	Meteor.call('customers.insert', customerName, (error, customerId) => {
   	  if (error) {
   	    Bert.alert(error.reason, 'danger');
