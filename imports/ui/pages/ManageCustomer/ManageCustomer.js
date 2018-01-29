@@ -39,7 +39,7 @@ class ManageCustomer extends React.Component {
 
 
 		  <Tab eventKey="readers" title="Readers">
-			  <CustomerReaderForm />
+			  <CustomerReaderForm customerId={customer && customer._id} />
 		  </Tab>
 
 
