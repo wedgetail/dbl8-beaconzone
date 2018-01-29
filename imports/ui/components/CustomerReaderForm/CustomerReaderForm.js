@@ -2,6 +2,8 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ControlLabel, Table } from 'react-bootstrap';
 import Papa from 'papaparse';
+import { withTracker } from 'meteor/react-meteor-data';
+import Readers from '../../../api/Readers/Readers';
 import InputHint from '../InputHint/InputHint';
 
 import './CustomerReaderForm.scss';
@@ -42,6 +44,7 @@ class CustomerReaderForm extends React.Component {
   }
 
   render() {
+    const { readers } = this.props;
     return (<div className="CustomerReaderForm">
     	<div className="CustomerReaderForm__upload">
     	  <ControlLabel>Upload a CSV</ControlLabel>
@@ -55,7 +58,7 @@ class CustomerReaderForm extends React.Component {
     	<Table responsive bordered>
     		<thead>
     			<tr>
-                    <th>Alive/Dead</th>
+            <th>Active?</th>
     				<th>Custom JSON</th>
     				<th>Serial Number</th>
     				<th>MAC Address</th>
@@ -63,20 +66,15 @@ class CustomerReaderForm extends React.Component {
     			</tr>
     		</thead>
     		<tbody>
-    			<tr>
-    				<td><label className="label label-success">Alive</label></td>
-                    <td><a href="#">Add Custom JSON</a></td>
-    				<td>123</td>
-    				<td>456</td>
-    				<td>February 1st, 2018</td>
-    			</tr>
-    			<tr>
-    				<td><label className="label label-danger">Dead</label></td>
-                    <td><a href="#">Edit Custom JSON</a></td>
-    				<td>123</td>
-    				<td>456</td>
-    				<td>November 1st, 2017</td>
-    			</tr>
+          {readers.map(({ readerActive, customJSON, serialNumber, macAddress }) => (
+            <tr>
+              <td><label className="label label-success">{readerActive}</label></td>
+              <td><a href="#">{customJSON}</a></td>
+              <td>{serialNumber}</td>
+              <td>{macAddress}</td>
+              <td>N/A</td>
+            </tr>
+          ))}
     		</tbody>
     	</Table>
 			<h4 className="page-header">Readers Details</h4>
@@ -97,4 +95,11 @@ CustomerReaderForm.propTypes = {
   // prop: PropTypes.string.isRequired,
 };
 
-export default CustomerReaderForm;
+export default withTracker((props) => {
+  const subscription = Meteor.subscribe('customers.readers', props.customerId);
+  return {
+    loading: !subscription.ready(),
+    readers: Readers.find({ customer: props.customerId }).fetch(),
+  };
+})(CustomerReaderForm);
+

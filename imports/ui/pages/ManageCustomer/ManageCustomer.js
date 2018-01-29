@@ -7,6 +7,7 @@ import CustomerForm from '../../components/CustomerForm/CustomerForm';
 import CustomerWifiForm from '../../components/CustomerWifiForm/CustomerWifiForm';
 import CustomerDataForm from '../../components/CustomerDataForm/CustomerDataForm';
 import CustomerReaderForm from '../../components/CustomerReaderForm/CustomerReaderForm';
+import CustomerBeaconForm from '../../components/CustomerBeaconForm/CustomerBeaconForm';
 
 class ManageCustomer extends React.Component {
   constructor(props) {
@@ -44,6 +45,7 @@ class ManageCustomer extends React.Component {
 
 
 		  <Tab eventKey="beacons" title="Beacons">
+		  	<CustomerBeaconForm customerId={customer && customer._id} />
 			  <h4 className="page-header">Beacons Details</h4>
 			  <p>Type - Dropdown</p>
 			  <p>MAC Address</p>

@@ -144,6 +144,15 @@ const CustomersSchema = new SimpleSchema({
     label: 'Config data for the delivery type.',
     blackbox: true,
   },
+  beaconUUIDs: {
+    type: Array,
+    label: 'UUIDs for the customer\'s beacons.',
+    defaultValue: [],
+  },
+  'beaconUUIDs.$': {
+    type: String,
+    label: 'A UUID for the customer.',
+  },
 });
 
 Customers.attachSchema(CustomersSchema);
