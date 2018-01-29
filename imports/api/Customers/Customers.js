@@ -88,6 +88,7 @@ const CustomersSchema = new SimpleSchema({
   ssIds: {
     type: Object,
     label: 'SSIDs for the customer.',
+    optional: true,
   },
   'ssIds.one': {
     type: Object,
@@ -134,6 +135,7 @@ const CustomersSchema = new SimpleSchema({
   dataDelivery: {
     type: Object,
     label: 'How data is delivered for the customer.',
+    optional: true,
   },
   'dataDelivery.type': {
     type: String,
