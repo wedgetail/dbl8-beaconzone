@@ -16,9 +16,9 @@ Events.deny({
 });
 
 const EventsSchema = new SimpleSchema({
-  CreatedDate: {
-    type: Date,
-    label: 'Date this document was created'
+  createdAt: {
+    type: String,
+    label: 'Date this event was created.',
   },
   owner: {
     type: String,
@@ -29,56 +29,68 @@ const EventsSchema = new SimpleSchema({
     label: 'The MQTT Topic that this event was received from.',
   },
   message: {
-    type: ,
+    type: Object,
     label: 'The message object for the event.',
   },
-    rdr: {
+  'message.rdr': {
     type: String,
     label: 'The Reader that this event came through.',
+    optional: true,
   },
-  man: {
-  type: String,
-  label: 'The Manufacturer of the beacon.',
-},
-  mac: {
+  'message.man': {
+    type: String,
+    label: 'The Manufacturer of the beacon.',
+    optional: true,
+  },
+  'message.mac': {
     type: String,
     label: 'The MAC address of the beacon.',
+    optional: true,
   },
-  uuid: {
+  'message.uuid': {
     type: String,
     label: 'The UUID of the beacon.',
+    optional: true,
   },
-  maj: {
+  'message.maj': {
     type: String,
     label: 'The Major value reported by the beacon.',
+    optional: true,
   },
-  min: {
+  'message.min': {
     type: String,
     label: 'The Minor value reported by the beacon.',
+    optional: true,
   },
-  batt: {
+  'message.batt': {
     type: String,
     label: 'The Battery value reported by the beacon.',
+    optional: true,
   },
-  temp: {
+  'message.temp': {
     type: String,
     label: 'The Temperature value reported by the beacon.',
+    optional: true,
   },
-  Hmdt: {
+  'message.hmdt': {
     type: String,
     label: 'The Humidity value reported by the beacon.',
+    optional: true,
   },
-  txpwr: {
+  'message.txpwr': {
     type: String,
     label: 'The Tx Power value of the beacon.',
+    optional: true,
   },
-  rssi: {
+  'message.rssi': {
     type: String,
     label: 'The RSSI value of the event.',
+    optional: true,
   },
-  unique: {
+  'message.unique': {
     type: String,
     label: 'A unique value for this event (concat various field values).',
+    optional: true,
   },
 });
 

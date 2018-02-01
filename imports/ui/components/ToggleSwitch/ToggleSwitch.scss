@@ -1,0 +1,52 @@
+@import '../../client/stylesheets/colors';
+
+.ToggleSwitch {
+  display: inline-block;
+  width: 63px;
+  padding: 4px;
+  background: $success;
+  border-radius: 100px;
+  transition: background 200ms ease;
+  text-align: left;
+
+  &:hover {
+    cursor: pointer;
+  }
+}
+
+.ToggleSwitch .handle {
+  display: inline-block;
+  width: 45px;
+  height: 26px;
+  background: #fff;
+  border-radius: 100px;
+  font-size: 12px;
+  text-transform: uppercase;
+  color: $success;
+  text-align: center;
+  transition: all 200ms ease-in-out;
+
+  .handle-label {
+    display: inline-block;
+    margin-top: 3px;
+    font-weight: 600;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+}
+
+.ToggleSwitch.no {
+  background: $danger;
+
+  .handle {
+    transform: translateX(10px);
+  }
+
+  .handle-label {
+    color: $danger;
+  }
+}
