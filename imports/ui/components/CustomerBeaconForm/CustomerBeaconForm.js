@@ -4,44 +4,24 @@ import { Row, Col, ControlLabel, Table, Nav, NavItem, Button, FormGroup } from '
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Bert } from 'meteor/themeteorchef:bert';
+import { ReactiveVar } from 'meteor/reactive-var';
 import Beacons from '../../../api/Beacons/Beacons';
 import Events from '../../../api/Events/Events';
 import Customers from '../../../api/Customers/Customers';
+import delay from '../../../modules/delay';
 
 import './CustomerBeaconForm.scss';
+
+const currentBeaconType = new ReactiveVar(null);
+const currentBeaconSearch = new ReactiveVar(null);
 
 class CustomerBeaconForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { tab: 1 };
+    this.state = { tab: 1, searchType: 'beaconType' };
     this.handleAddUUID = this.handleAddUUID.bind(this);
     this.handleDeleteUUID = this.handleDeleteUUID.bind(this);
     this.renderUUIDs = this.renderUUIDs.bind(this);
-  }
-
-  renderBeacons(beacons) {
-    return (
-      <Table>
-        <thead>
-          <tr>
-            <th>Type</th>
-            <th>MAC Address</th>
-            <th>Last Seen Date/Time</th>
-            <th>Reader Serial Number</th>
-          </tr>
-        </thead>
-        <tbody>
-          {beacons.map(({ _id, beaconType, macAddress, mostRecentEvent }) => (
-            <tr key={_id}>
-              <td>{beaconType}</td>
-              <td>{macAddress}</td>
-              <td>{mostRecentEvent.createdAt}</td>
-              <td>{mostRecentEvent.message.rdr}</td>
-            </tr>
-          ))}
-        </tbody>
-      </Table>
-    );
   }
 
   handleAddUUID(event) {
@@ -71,6 +51,65 @@ class CustomerBeaconForm extends React.Component {
         Bert.alert('UUID deleted!', 'success');
       }
     });
+  }
+
+  renderBeacons(beacons) {
+    const { searchType } = this.state;
+
+    return (
+      <div>
+        <header className="clearfix">
+          <select name="searchType" className="form-control" value={searchType} onChange={(event) => this.setState({ searchType: event.target.value })}>
+            <option value="beaconType">Beacon Type</option>
+            <option value="macAddress">MAC Address</option>
+            <option value="serialNumber">Serial Number</option>
+          </select>
+          {searchType === 'beaconType' ? <div>
+            <select name="beaconType" className="form-control" onChange={(event) => { currentBeaconType.set(event.target.value); }}>
+              <option value="all">All Types</option>
+              <option value="801">Falcon Heavy</option>
+              <option value="802">Falcon 9</option>
+              <option value="803">Gemini</option>
+            </select>
+          </div> : ''}
+          {searchType === 'macAddress' || searchType === 'serialNumber' ? <div>
+            <input
+              type="search"
+              name="beaconSearch"
+              className="form-control"
+              ref={beaconSearch => (this.beaconSearch = beaconSearch)}
+              placeholder={searchType === 'macAddress' ? 'MAC Address' : 'Reader Serial #'}
+              onChange={(event) => {
+                event.persist(); // Keeps event around for use within delay function below.
+                delay(() => {
+                  currentBeaconSearch.set({ type: searchType, value: event.target.value });
+                }, 500);
+              }}
+            />
+          </div> : ''}
+        </header>
+        <Table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>MAC Address</th>
+              <th>Last Seen Date/Time</th>
+              <th>Reader Serial Number</th>
+            </tr>
+          </thead>
+          <tbody>
+            {beacons.map(({ _id, beaconType, macAddress, mostRecentEvent }) => (
+              <tr key={_id}>
+                <td>{beaconType}</td>
+                <td>{macAddress}</td>
+                <td>{mostRecentEvent && mostRecentEvent.createdAt}</td>
+                <td>{mostRecentEvent && mostRecentEvent.message.rdr}</td>
+              </tr>
+            ))}
+          </tbody>
+        </Table>
+      </div>
+    );
   }
 
   renderUUIDs(uuids) {
@@ -129,7 +168,7 @@ CustomerBeaconForm.propTypes = {
 };
 
 export default withTracker((props) => {
-  const subscription = Meteor.subscribe('customers.beacons', props.customerId);
+  const subscription = Meteor.subscribe('customers.beacons', props.customerId, currentBeaconType.get(), currentBeaconSearch.get());
   const customer = Customers.findOne({ _id: props.customerId });
 
   return {
@@ -142,5 +181,6 @@ export default withTracker((props) => {
       };
     }),
     uuids: customer && customer.beaconUUIDs,
+    beaconTypes: [],
   };
 })(CustomerBeaconForm);
