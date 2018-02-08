@@ -4,63 +4,63 @@ import { ButtonToolbar, ButtonGroup, Button } from 'react-bootstrap';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
-import Documents from '../../../api/Documents/Documents';
+import BeaconTypes from '../../../api/BeaconTypes/BeaconTypes';
 import NotFound from '../NotFound/NotFound';
 import Loading from '../../components/Loading/Loading';
 
-const handleRemove = (documentId, history) => {
+const handleRemove = (beaconTypeId, history) => {
   if (confirm('Are you sure? This is permanent!')) {
-    Meteor.call('documents.remove', documentId, (error) => {
+    Meteor.call('beaconTypes.remove', beaconTypeId, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
-        Bert.alert('Document deleted!', 'success');
-        history.push('/documents');
+        Bert.alert('Beacon type deleted!', 'success');
+        history.push('/admin/beaconTypes');
       }
     });
   }
 };
 
-const renderDocument = (doc, match, history) => (doc ? (
-  <div className="ViewDocument">
+const renderBeaconType = (beaconType, match, history) => (beaconType ? (
+  <div className="ViewBeaconType">
     <div className="page-header clearfix">
-      <h4 className="pull-left">{ doc && doc.title }</h4>
+      <h4 className="pull-left">{ beaconType && beaconType.title } &mdash; { beaconType && beaconType.beaconTypeCode }</h4>
       <ButtonToolbar className="pull-right">
         <ButtonGroup bsSize="small">
           <Button onClick={() => history.push(`${match.url}/edit`)}>Edit</Button>
-          <Button onClick={() => handleRemove(doc._id, history)} className="text-danger">
+          <Button onClick={() => handleRemove(beaconType._id, history)} className="text-danger">
             Delete
           </Button>
         </ButtonGroup>
       </ButtonToolbar>
     </div>
-    { doc && doc.body }
+    { beaconType && beaconType.description }
   </div>
 ) : <NotFound />);
 
-const ViewDocument = ({
-  loading, doc, match, history,
+const ViewBeaconType = ({
+  loading, beaconType, match, history,
 }) => (
-  !loading ? renderDocument(doc, match, history) : <Loading />
+  !loading ? renderBeaconType(beaconType, match, history) : <Loading />
 );
 
-ViewDocument.defaultProps = {
-  doc: null,
+ViewBeaconType.defaultProps = {
+  beaconType: null,
 };
 
-ViewDocument.propTypes = {
+ViewBeaconType.propTypes = {
   loading: PropTypes.bool.isRequired,
-  doc: PropTypes.object,
+  beaconType: PropTypes.object,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
 
 export default withTracker(({ match }) => {
-  const documentId = match.params._id;
-  const subscription = Meteor.subscribe('documents.view', documentId);
+  const beaconTypeId = match.params._id;
+  const subscription = Meteor.subscribe('beaconTypes.view', beaconTypeId);
 
   return {
     loading: !subscription.ready(),
-    doc: Documents.findOne(documentId),
+    beaconType: BeaconTypes.findOne(beaconTypeId),
   };
-})(ViewDocument);
+})(ViewBeaconType);

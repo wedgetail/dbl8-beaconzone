@@ -10,11 +10,8 @@ const AuthenticatedNavigation = ({ name, history }) => (
       <LinkContainer to="/admin/customers">
         <NavItem eventKey={1} href="/admin/customers">Customers</NavItem>
       </LinkContainer>
-        <LinkContainer to="/admin/beaconTypes">
-            <NavItem eventKey={1} href="/admin/beaconTypes">Beacon Types</NavItem>
-        </LinkContainer>
-      <LinkContainer to="/documents">
-        <NavItem eventKey={2} href="/documents">Documents</NavItem>
+      <LinkContainer to="/admin/beaconTypes">
+          <NavItem eventKey={1} href="/admin/beaconTypes">Beacon Types</NavItem>
       </LinkContainer>
     </Nav>
     <Nav pullRight>

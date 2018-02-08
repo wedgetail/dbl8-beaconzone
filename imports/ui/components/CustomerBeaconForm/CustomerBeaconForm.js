@@ -6,6 +6,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { ReactiveVar } from 'meteor/reactive-var';
 import Beacons from '../../../api/Beacons/Beacons';
+import BeaconTypes from '../../../api/BeaconTypes/BeaconTypes';
 import Events from '../../../api/Events/Events';
 import Customers from '../../../api/Customers/Customers';
 import delay from '../../../modules/delay';
@@ -67,9 +68,9 @@ class CustomerBeaconForm extends React.Component {
           {searchType === 'beaconType' ? <div>
             <select name="beaconType" className="form-control" onChange={(event) => { currentBeaconType.set(event.target.value); }}>
               <option value="all">All Types</option>
-              <option value="801">Falcon Heavy</option>
-              <option value="802">Falcon 9</option>
-              <option value="803">Gemini</option>
+              {this.props.beaconTypes.map(({ _id, title, beaconTypeCode }) => (
+                <option value={beaconTypeCode}>{title} ({beaconTypeCode})</option>
+              ))}
             </select>
           </div> : ''}
           {searchType === 'macAddress' || searchType === 'serialNumber' ? <div>
@@ -98,9 +99,9 @@ class CustomerBeaconForm extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {beacons.map(({ _id, beaconType, macAddress, mostRecentEvent }) => (
+            {beacons.map(({ _id, beaconTypeCode, macAddress, mostRecentEvent }) => (
               <tr key={_id}>
-                <td>{beaconType}</td>
+                <td>{beaconTypeCode}</td>
                 <td>{macAddress}</td>
                 <td>{mostRecentEvent && mostRecentEvent.createdAt}</td>
                 <td>{mostRecentEvent && mostRecentEvent.message.rdr}</td>
@@ -181,6 +182,6 @@ export default withTracker((props) => {
       };
     }),
     uuids: customer && customer.beaconUUIDs,
-    beaconTypes: [],
+    beaconTypes: BeaconTypes.find().fetch(),
   };
 })(CustomerBeaconForm);

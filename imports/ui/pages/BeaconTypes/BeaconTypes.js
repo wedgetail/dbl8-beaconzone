@@ -5,33 +5,33 @@ import { Table, Alert, Button } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Bert } from 'meteor/themeteorchef:bert';
-import DocumentsCollection from '../../../api/Documents/Documents';
+import BeaconTypesCollection from '../../../api/BeaconTypes/BeaconTypes';
 import { timeago, monthDayYearAtTime } from '../../../modules/dates';
 import Loading from '../../components/Loading/Loading';
 
-import './Documents.scss';
+import './BeaconTypes.scss';
 
 const handleRemove = (documentId) => {
   if (confirm('Are you sure? This is permanent!')) {
-    Meteor.call('documents.remove', documentId, (error) => {
+    Meteor.call('beaconTypes.remove', documentId, (error) => {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
-        Bert.alert('Document deleted!', 'success');
+        Bert.alert('Beacon type deleted!', 'success');
       }
     });
   }
 };
 
-const Documents = ({
-  loading, documents, match, history,
+const BeaconTypes = ({
+  loading, beaconTypes, match, history,
 }) => (!loading ? (
-  <div className="Documents">
+  <div className="BeaconTypes">
     <div className="page-header clearfix">
-      <h4 className="pull-left">Documents</h4>
-      <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Document</Link>
+      <h4 className="pull-left">Beacon Types</h4>
+      <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Beacon Type</Link>
     </div>
-    {documents.length ?
+    {beaconTypes.length ?
       <Table responsive>
         <thead>
           <tr>
@@ -43,7 +43,7 @@ const Documents = ({
           </tr>
         </thead>
         <tbody>
-          {documents.map(({
+          {beaconTypes.map(({
             _id, title, createdAt, updatedAt,
           }) => (
             <tr key={_id}>
@@ -71,21 +71,21 @@ const Documents = ({
             </tr>
           ))}
         </tbody>
-      </Table> : <Alert bsStyle="warning">No documents yet!</Alert>}
+      </Table> : <Alert bsStyle="warning">No beacon types yet!</Alert>}
   </div>
 ) : <Loading />);
 
-Documents.propTypes = {
+BeaconTypes.propTypes = {
   loading: PropTypes.bool.isRequired,
-  documents: PropTypes.arrayOf(PropTypes.object).isRequired,
+  beaconTypes: PropTypes.arrayOf(PropTypes.object).isRequired,
   match: PropTypes.object.isRequired,
   history: PropTypes.object.isRequired,
 };
 
 export default withTracker(() => {
-  const subscription = Meteor.subscribe('documents');
+  const subscription = Meteor.subscribe('beaconTypes');
   return {
     loading: !subscription.ready(),
-    documents: DocumentsCollection.find().fetch(),
+    beaconTypes: BeaconTypesCollection.find().fetch(),
   };
-})(Documents);
+})(BeaconTypes);

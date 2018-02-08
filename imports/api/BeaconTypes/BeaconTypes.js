@@ -1,3 +1,5 @@
+/* eslint-disable consistent-return */
+
 import { Mongo } from 'meteor/mongo';
 import SimpleSchema from 'simpl-schema';
 
@@ -15,18 +17,36 @@ BeaconTypes.deny({
   remove: () => true,
 });
 
-const BeaconTypesSchema = new SimpleSchema({
-  beaconCode: {
+BeaconTypes.schema = new SimpleSchema({
+  createdAt: {
+    type: String,
+    label: 'The date this beacon type was created.',
+    autoValue() {
+      if (this.isInsert) return (new Date()).toISOString();
+    },
+  },
+  updatedAt: {
+    type: String,
+    label: 'The date this beacon type was last updated.',
+    autoValue() {
+      if (this.isInsert || this.isUpdate) return (new Date()).toISOString();
+    },
+  },
+  title: {
+    type: String,
+    label: 'The title of the beacon type.',
+  },
+  beaconTypeCode: {
     type: String,
     label: 'The code for the beacon type.',
     unique: true,
   },
   description: {
     type: String,
-    label: 'The description for this beacon type.',
+    label: 'The description of the beacon type.',
   },
 });
 
-BeaconTypes.attachSchema(BeaconTypesSchema);
+BeaconTypes.attachSchema(BeaconTypes.schema);
 
 export default BeaconTypes;

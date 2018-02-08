@@ -3,6 +3,7 @@ import { check, Match } from 'meteor/check';
 import Customers from '../Customers';
 import Readers from '../../Readers/Readers';
 import Beacons from '../../Beacons/Beacons';
+import BeaconTypes from '../../BeaconTypes/BeaconTypes';
 import Events from '../../Events/Events';
 
 Meteor.publish('customers', function customers() {
@@ -20,9 +21,9 @@ Meteor.publish('customers.readers', function customersReaders(customer) {
   return Readers.find({ customer: customer }, { sort: { serialNumber: 1 } });
 });
 
-Meteor.publish('customers.beacons', function customersBeacons(customer, beaconType, beaconSearch) {
+Meteor.publish('customers.beacons', function customersBeacons(customer, beaconTypeCode, beaconSearch) {
   check(customer, String);
-  check(beaconType, Match.OneOf(String, null));
+  check(beaconTypeCode, Match.OneOf(String, null));
   check(beaconSearch, Match.OneOf(Object, null));
 
   if (beaconSearch && beaconSearch.type === 'serialNumber') {
@@ -33,17 +34,19 @@ Meteor.publish('customers.beacons', function customersBeacons(customer, beaconTy
       Customers.find({ _id: customer }),
       beaconsByMAC,
       readerEvents,
+      BeaconTypes.find(),
     ];
   } else {
     const beaconQuery = { customer: customer };
-    if (beaconType && beaconType !== 'all') beaconQuery.beaconType = beaconType; // { beaconType: beaconType };
+    if (beaconTypeCode && beaconTypeCode !== 'all') beaconQuery.beaconTypeCode = beaconTypeCode; // { beaconTypeCode: beaconTypeCode };
     if (beaconSearch && beaconSearch.type === 'macAddress') beaconQuery.macAddress = new RegExp(beaconSearch.value, 'i'); // /aelkjre9r8era/i
-    const beacons = Beacons.find(beaconQuery); // { customer: customer, beaconType: beaconType };
+    const beacons = Beacons.find(beaconQuery); // { customer: customer, beaconTypeCode: beaconTypeCode };
 
     return [
       Customers.find({ _id: customer }),
       Beacons.find(beaconQuery, { sort: { macAddress: 1 } }),
       Events.find({ 'message.mac': { $in: beacons.fetch().map(({ macAddress }) => macAddress) } }, { sort: { createdAt: -1 } }),
+      BeaconTypes.find(),
     ];
   }
 });
