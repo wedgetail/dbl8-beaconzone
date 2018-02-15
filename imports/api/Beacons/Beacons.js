@@ -16,6 +16,12 @@ Beacons.deny({
 });
 
 const BeaconsSchema = new SimpleSchema({
+  whitelisted: {
+    type: String,
+    allowedValues: ['null', 'true', 'false'],
+    defaultValue: 'null',
+    label: 'Is this beacon recognized (or ignored) by the customer receiving its events?',
+  },
   beaconType: {
     type: String,
     label: 'The type of beacon.',
@@ -28,6 +34,7 @@ const BeaconsSchema = new SimpleSchema({
   customer: {
     type: String,
     label: 'The ID of the customer this beacon belongs to.',
+    optional: true,
   },
 });
 

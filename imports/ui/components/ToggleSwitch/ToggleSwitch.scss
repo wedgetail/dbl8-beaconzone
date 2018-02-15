@@ -1,9 +1,10 @@
-@import '../../client/stylesheets/colors';
+@import '../../stylesheets/colors';
 
 .ToggleSwitch {
   display: inline-block;
-  width: 63px;
-  padding: 4px;
+  width: 48px;
+  height: 20px;
+  padding: 2px 4px;
   background: $success;
   border-radius: 100px;
   transition: background 200ms ease;
@@ -16,8 +17,8 @@
 
 .ToggleSwitch .handle {
   display: inline-block;
-  width: 45px;
-  height: 26px;
+  width: 30px;
+  height: 14px;
   background: #fff;
   border-radius: 100px;
   font-size: 12px;
@@ -27,7 +28,8 @@
   transition: all 200ms ease-in-out;
 
   .handle-label {
-    display: inline-block;
+    display: none;
+    // display: inline-block;
     margin-top: 3px;
     font-weight: 600;
     -webkit-touch-callout: none;

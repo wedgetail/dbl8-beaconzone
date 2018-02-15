@@ -1,18 +1,24 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { ControlLabel, Table } from 'react-bootstrap';
+import { ControlLabel, Table, Button } from 'react-bootstrap';
 import Papa from 'papaparse';
 import { withTracker } from 'meteor/react-meteor-data';
+import { Meteor } from 'meteor/meteor';
+import { Bert } from 'meteor/themeteorchef:bert';
 import Readers from '../../../api/Readers/Readers';
+import Events from '../../../api/Events/Events';
 import InputHint from '../InputHint/InputHint';
+import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
+import { monthDayYearAtTime } from '../../../modules/dates';
 
 import './CustomerReaderForm.scss';
 
 class CustomerReaderForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { uploading: false };
+    this.state = { uploading: false, readers: [] };
     this.handleUploadCSV = this.handleUploadCSV.bind(this);
+    this.fetchReaderData = this.fetchReaderData.bind(this);
   }
 
   handleUploadCSV(event) {
@@ -43,8 +49,31 @@ class CustomerReaderForm extends React.Component {
     }
   }
 
+  fetchReaderData() {
+    Meteor.call('customers.fetchLatestReaderData', this.props.customerId, (error, readers) => {
+      if (error) {
+        Bert.alert(error.reason, 'danger');
+      } else {
+        this.setState({ readers: readers });
+      }
+    });
+  }
+
+  componentWillMount() {
+    this.fetchReaderData();
+  }
+
+  handleUpdateReaderStatus(status) {
+    Meteor.call('readers.updateStatus', status, (error) => {
+      if (error) {
+        Bert.alert(error.reason, 'danger');
+      } else {
+        Bert.alert('Status updated!', 'success');
+      }
+    });
+  }
+
   render() {
-    const { readers } = this.props;
     return (<div className="CustomerReaderForm">
     	<div className="CustomerReaderForm__upload">
     	  <ControlLabel>Upload a CSV</ControlLabel>
@@ -55,6 +84,7 @@ class CustomerReaderForm extends React.Component {
     	  />}
     	  <InputHint>Upload .csv list of readers for this customer.</InputHint>
     	</div>
+      <Button onClick={this.fetchReaderData} bsStyle="success">Fetch Latest Data</Button>
     	<Table responsive bordered>
     		<thead>
     			<tr>
@@ -66,27 +96,17 @@ class CustomerReaderForm extends React.Component {
     			</tr>
     		</thead>
     		<tbody>
-          {readers.map(({ readerActive, customJSON, serialNumber, macAddress }) => (
+          {this.state.readers.map(({ _id, readerActive, customJSON, serialNumber, macAddress, mostRecentEvent }) => (
             <tr>
-              <td><label className="label label-success">{readerActive}</label></td>
+              <td><ToggleSwitch id={_id} toggled={readerActive} onLabel="Yes" offLabel="No" onToggle={(readerId, isReaderActive) => this.handleUpdateReaderStatus({ _id: readerId, readerActive: isReaderActive })} /></td>
               <td><a href="#">{customJSON}</a></td>
               <td>{serialNumber}</td>
               <td>{macAddress}</td>
-              <td>N/A</td>
+              <td>{monthDayYearAtTime(mostRecentEvent)}</td>
             </tr>
           ))}
     		</tbody>
     	</Table>
-			<h4 className="page-header">Readers Details</h4>
-		  <p>Need a way to add readers manually, one at a time would be fine.</p>
-		  <p>Need to be able to import Readers from a CSV file (select file dialog)</p>
-		  <p>-------------------------------------------</p>
-		  <p>Serial Number</p>
-		  <p>MAC Address</p>
-		  <p>Last Event Received</p>
-		  <p>-------------------------------------------</p>
-		  <p>We already have a collection of all readers, however this view only shows readers owned by the customer </p>
-		  <p>Search - Reader Serial Number - auto-filter</p>
     </div>);
   }
 }
@@ -95,11 +115,5 @@ CustomerReaderForm.propTypes = {
   // prop: PropTypes.string.isRequired,
 };
 
-export default withTracker((props) => {
-  const subscription = Meteor.subscribe('customers.readers', props.customerId);
-  return {
-    loading: !subscription.ready(),
-    readers: Readers.find({ customer: props.customerId }).fetch(),
-  };
-})(CustomerReaderForm);
+export default CustomerReaderForm;
 

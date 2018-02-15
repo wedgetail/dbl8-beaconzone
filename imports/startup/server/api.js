@@ -5,6 +5,8 @@ import '../../api/BeaconTypes/server/publications';
 
 import '../../api/OAuth/server/methods';
 
+import '../../api/Readers/methods';
+
 import '../../api/Users/server/methods';
 import '../../api/Users/server/publications';
 

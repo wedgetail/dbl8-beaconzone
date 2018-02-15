@@ -19,10 +19,11 @@ const currentBeaconSearch = new ReactiveVar(null);
 class CustomerBeaconForm extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { tab: 1, searchType: 'beaconType' };
+    this.state = { tab: 1, searchType: 'beaconType', data: { customer: null, beacons: [], beaconTypes: [] } };
     this.handleAddUUID = this.handleAddUUID.bind(this);
     this.handleDeleteUUID = this.handleDeleteUUID.bind(this);
     this.renderUUIDs = this.renderUUIDs.bind(this);
+    this.fetchBeaconData = this.fetchBeaconData.bind(this);
   }
 
   handleAddUUID(event) {
@@ -55,20 +56,27 @@ class CustomerBeaconForm extends React.Component {
   }
 
   renderBeacons(beacons) {
-    const { searchType } = this.state;
+    const { searchType, data: { beaconTypes } } = this.state;
 
     return (
       <div>
         <header className="clearfix">
-          <select name="searchType" className="form-control" value={searchType} onChange={(event) => this.setState({ searchType: event.target.value })}>
+          <select name="searchType" className="form-control" value={searchType} onChange={(event) => {
+            this.setState({ searchType: event.target.value }, () => {
+              if (this.beaconSearch) {
+                this.beaconSearch.value = '';
+                this.beaconSearch.focus();
+              }
+            });
+          }}>
             <option value="beaconType">Beacon Type</option>
             <option value="macAddress">MAC Address</option>
             <option value="serialNumber">Serial Number</option>
           </select>
           {searchType === 'beaconType' ? <div>
-            <select name="beaconType" className="form-control" onChange={(event) => { currentBeaconType.set(event.target.value); }}>
+            <select name="beaconType" className="form-control" onChange={(event) => { currentBeaconType.set(event.target.value); this.fetchBeaconData(); }}>
               <option value="all">All Types</option>
-              {this.props.beaconTypes.map(({ _id, title, beaconTypeCode }) => (
+              {beaconTypes.map(({ _id, title, beaconTypeCode }) => (
                 <option value={beaconTypeCode}>{title} ({beaconTypeCode})</option>
               ))}
             </select>
@@ -84,6 +92,7 @@ class CustomerBeaconForm extends React.Component {
                 event.persist(); // Keeps event around for use within delay function below.
                 delay(() => {
                   currentBeaconSearch.set({ type: searchType, value: event.target.value });
+                  this.fetchBeaconData();
                 }, 500);
               }}
             />
@@ -146,8 +155,22 @@ class CustomerBeaconForm extends React.Component {
     </div>);
   }
 
+  fetchBeaconData() {
+    Meteor.call('customers.fetchLatestBeaconData', this.props.customerId, currentBeaconType.get(), currentBeaconSearch.get(), (error, data) => {
+      if (error) {
+        Bert.alert(error.reason, 'danger');
+      } else {
+        this.setState({ data: data });
+      }
+    });
+  }
+
+  componentWillMount() {
+    this.fetchBeaconData();
+  }
+
   render() {
-    const { beacons, uuids } = this.props;
+    const { data: { beacons, customer } } = this.state;
     return (<div className="CustomerBeaconForm">
     	<Row>
         <Col xs={12} sm={2}>
@@ -157,7 +180,7 @@ class CustomerBeaconForm extends React.Component {
           </Nav>
         </Col>
         <Col xs={12} sm={10}>
-          {this.state.tab === 1 ? this.renderBeacons(beacons) : this.renderUUIDs(uuids)}
+          {this.state.tab === 1 ? this.renderBeacons(beacons) : this.renderUUIDs(customer && customer.uuids)}
         </Col>
       </Row>
     </div>);
@@ -168,20 +191,4 @@ CustomerBeaconForm.propTypes = {
   // prop: PropTypes.string.isRequired,
 };
 
-export default withTracker((props) => {
-  const subscription = Meteor.subscribe('customers.beacons', props.customerId, currentBeaconType.get(), currentBeaconSearch.get());
-  const customer = Customers.findOne({ _id: props.customerId });
-
-  return {
-    loading: !subscription.ready(),
-    beacons: Beacons.find().fetch().map((beacon) => {
-      const mostRecentEvent = Events.findOne({ 'message.mac': beacon.macAddress }, { limit: 1, sort: { createdAt: -1 } });
-      return {
-        ...beacon,
-        mostRecentEvent,
-      };
-    }),
-    uuids: customer && customer.beaconUUIDs,
-    beaconTypes: BeaconTypes.find().fetch(),
-  };
-})(CustomerBeaconForm);
+export default CustomerBeaconForm;

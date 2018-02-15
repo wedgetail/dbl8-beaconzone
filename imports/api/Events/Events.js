@@ -23,6 +23,7 @@ const EventsSchema = new SimpleSchema({
   owner: {
     type: String,
     label: 'The ID of the owner of this event.',
+    optional: true,
   },
   topic: {
     type: String,

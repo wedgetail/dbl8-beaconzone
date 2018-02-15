@@ -1,4 +1,5 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 
 import './ToggleSwitch.scss';
 
@@ -40,11 +41,11 @@ class ToggleSwitch extends React.Component {
 }
 
 ToggleSwitch.propTypes = {
-  id: React.PropTypes.string,
-  toggled: React.PropTypes.bool,
-  onLabel: React.PropTypes.string,
-  offLabel: React.PropTypes.string,
-  onToggle: React.PropTypes.func,
+  id: PropTypes.string,
+  toggled: PropTypes.bool,
+  onLabel: PropTypes.string,
+  offLabel: PropTypes.string,
+  onToggle: PropTypes.func,
 };
 
 export default ToggleSwitch;
