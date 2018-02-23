@@ -155,6 +155,11 @@ const CustomersSchema = new SimpleSchema({
     type: String,
     label: 'A UUID for the customer.',
   },
+  defaultReaderJSON: {
+    type: String,
+    label: 'The default JSON for this customer\'s readers.',
+    optional: true,
+  },
 });
 
 Customers.attachSchema(CustomersSchema);

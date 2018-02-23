@@ -47,6 +47,16 @@ Meteor.methods({
       throw new Meteor.Error('500', exception);
     }
   },
+  'customers.editDefaultJSON': function customersEditDefaultJSON(json) {
+    check(json, Object);
+
+    try {
+      Customers.update({ _id: json.customerId }, { $set: { defaultReaderJSON: json.json } });
+    } catch (exception) {
+      console.warn(exception);
+      throw new Meteor.Error('500', exception);
+    }
+  },
   'customers.addBeaconUUID': function customersAddBeaconUUID(uuid) {
     check(uuid, Object);
 
@@ -79,7 +89,7 @@ Meteor.methods({
         const mostRecentEvent = Events.findOne({ 'message.rdr': reader.serialNumber }, { sort: { createdAt: -1 } });
         return {
           ...reader,
-          mostRecentEvent: mostRecentEvent.createdAt,
+          mostRecentEvent: mostRecentEvent ? mostRecentEvent.createdAt : 'N/A',
         };
       });
     } catch (exception) {

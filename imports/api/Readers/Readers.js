@@ -35,7 +35,7 @@ const ReadersSchema = new SimpleSchema({
     label: 'The mac address for the reader.',
   },
   customJSON: {
-    type: Object,
+    type: String,
     label: 'The custom JSON data for the reader.',
     optional: true,
   },
