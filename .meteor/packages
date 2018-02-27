@@ -35,3 +35,4 @@ dynamic-import@0.2.0
 static-html
 aldeed:schema-index
 reywood:publish-composite
+meteorhacks:picker

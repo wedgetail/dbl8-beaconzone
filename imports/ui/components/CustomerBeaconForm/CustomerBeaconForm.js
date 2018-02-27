@@ -180,7 +180,7 @@ class CustomerBeaconForm extends React.Component {
           </Nav>
         </Col>
         <Col xs={12} sm={10}>
-          {this.state.tab === 1 ? this.renderBeacons(beacons) : this.renderUUIDs(customer && customer.uuids)}
+          {this.state.tab === 1 ? this.renderBeacons(beacons) : this.renderUUIDs(customer && customer.beaconUUIDs)}
         </Col>
       </Row>
     </div>);
