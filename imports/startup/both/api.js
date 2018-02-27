@@ -1,1 +1,1 @@
-import '../../api/Documents/methods';
+import '../../api/BeaconTypes/methods';

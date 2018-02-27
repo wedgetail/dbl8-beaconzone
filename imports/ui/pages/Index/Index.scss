@@ -3,13 +3,13 @@
 
 .Index {
   padding: 20px;
-  background: $cb-blue;
+  background: $cb-red;
   text-align: center;
   border-radius: 3px;
   color: #fff;
 
   img {
-    width: 100px;
+    width: 200px;
     height: auto;
   }
 
@@ -19,7 +19,7 @@
 
   p {
     font-size: 18px;
-    color: lighten($cb-blue, 25%);
+    color: lighten($cb-red, 15%);
   }
 
   > div {
@@ -37,18 +37,18 @@
 
   footer {
     margin: 20px -20px -20px;
-    border-top: 1px solid darken($cb-blue, 10%);
+    border-top: 1px solid darken($cb-red, 10%);
     padding: 20px;
 
     p {
       font-size: 14px;
       line-height: 22px;
-      color: lighten($cb-blue, 35%);
+      color: lighten($cb-red, 35%);
       margin: 0;
     }
 
     p a {
-      color: lighten($cb-blue, 35%);
+      color: lighten($cb-red, 35%);
       text-decoration: underline;
     }
   }

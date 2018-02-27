@@ -1,0 +1,15 @@
+.CustomerBeaconForm {
+	margin-top: 20px;
+}
+
+.CustomerBeaconForm header {
+  .form-control {
+    float: left;
+    max-width: 300px;
+  }
+
+  > div {
+    float: right;
+    width: 300px;
+  }
+}

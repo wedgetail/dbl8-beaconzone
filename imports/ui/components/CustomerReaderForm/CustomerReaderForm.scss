@@ -1,0 +1,21 @@
+@import '../../stylesheets/colors';
+
+.CustomerReaderForm__upload {
+	border: 1px solid $gray-lighter;
+	padding: 20px;
+	margin: 20px 0;
+	border-radius: 3px;
+
+	input[type="file"] {
+		padding: 8px 12px !important;
+		line-height: 0 !important;
+	}
+}
+
+.CustomerReaderForm .table {
+  margin-top: 20px;
+}
+
+.CustomerReaderForm__options .btn:first-child {
+  margin-right: 10px;
+}

@@ -1,17 +1,33 @@
 import seeder from '@cleverbeagle/seeder';
 import { Meteor } from 'meteor/meteor';
-import Documents from '../../api/Documents/Documents';
+import Customers from '../../api/Customers/Customers';
 
-const documentsSeed = userId => ({
-  collection: Documents,
+const customersSeed = userId => ({
+  collection: Customers,
   environments: ['development', 'staging'],
   noLimit: true,
   modelCount: 5,
-  model(dataIndex) {
+  model(dataIndex, faker) {
     return {
-      owner: userId,
-      title: `Document #${dataIndex + 1}`,
-      body: `This is the body of document #${dataIndex + 1}`,
+      users: [{
+        userId,
+        isAdmin: true,
+      }],
+      name: faker.company.companyName(),
+      contact: faker.name.findName(),
+      address: faker.address.streetName(),
+      city: faker.address.city(),
+      state: faker.address.stateAbbr(),
+      zip: faker.address.zipCode(),
+      mobile: faker.phone.phoneNumber(),
+      telephone: faker.phone.phoneNumber(),
+      email: faker.internet.email(),
+      ssIds: {
+        one: {
+          ssid: 'Test Net',
+          securityKey: '123',
+        },
+      },
     };
   },
 });
@@ -30,7 +46,7 @@ seeder(Meteor.users, {
     },
     roles: ['admin'],
     data(userId) {
-      return documentsSeed(userId);
+      return customersSeed(userId);
     },
   }],
   modelCount: 5,
@@ -47,7 +63,7 @@ seeder(Meteor.users, {
       },
       roles: ['user'],
       data(userId) {
-        return documentsSeed(userId);
+        // return documentsSeed(userId);
       },
     };
   },

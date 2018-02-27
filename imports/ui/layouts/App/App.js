@@ -11,10 +11,10 @@ import Navigation from '../../components/Navigation/Navigation';
 import Authenticated from '../../components/Authenticated/Authenticated';
 import Public from '../../components/Public/Public';
 import Index from '../../pages/Index/Index';
-import Documents from '../../pages/Documents/Documents';
-import NewDocument from '../../pages/NewDocument/NewDocument';
-import ViewDocument from '../../pages/ViewDocument/ViewDocument';
-import EditDocument from '../../pages/EditDocument/EditDocument';
+import BeaconTypes from '../../pages/BeaconTypes/BeaconTypes';
+import NewBeaconType from '../../pages/NewBeaconType/NewBeaconType';
+import ViewBeaconType from '../../pages/ViewBeaconType/ViewBeaconType';
+import EditBeaconType from '../../pages/EditBeaconType/EditBeaconType';
 import Signup from '../../pages/Signup/Signup';
 import Login from '../../pages/Login/Login';
 import Logout from '../../pages/Logout/Logout';
@@ -22,6 +22,9 @@ import VerifyEmail from '../../pages/VerifyEmail/VerifyEmail';
 import RecoverPassword from '../../pages/RecoverPassword/RecoverPassword';
 import ResetPassword from '../../pages/ResetPassword/ResetPassword';
 import Profile from '../../pages/Profile/Profile';
+import Customers from '../../pages/Customers/Customers';
+import NewCustomer from '../../pages/NewCustomer/NewCustomer';
+import ManageCustomer from '../../pages/ManageCustomer/ManageCustomer';
 import NotFound from '../../pages/NotFound/NotFound';
 import Footer from '../../components/Footer/Footer';
 import Terms from '../../pages/Terms/Terms';
@@ -47,11 +50,14 @@ const App = props => (
         <Grid>
           <Switch>
             <Route exact name="index" path="/" component={Index} />
-            <Authenticated exact path="/documents" component={Documents} {...props} />
-            <Authenticated exact path="/documents/new" component={NewDocument} {...props} />
-            <Authenticated exact path="/documents/:_id" component={ViewDocument} {...props} />
-            <Authenticated exact path="/documents/:_id/edit" component={EditDocument} {...props} />
             <Authenticated exact path="/profile" component={Profile} {...props} />
+            <Authenticated exact path="/admin/customers" component={Customers} {...props} />
+            <Authenticated exact path="/admin/customers/new" component={NewCustomer} {...props} />
+            <Authenticated exact path="/admin/customers/:_id" component={ManageCustomer} {...props} />
+            <Authenticated exact path="/admin/beaconTypes" component={BeaconTypes} {...props} />
+            <Authenticated exact path="/admin/beaconTypes/new" component={NewBeaconType} {...props} />
+            <Authenticated exact path="/admin/beaconTypes/:_id" component={ViewBeaconType} {...props} />
+            <Authenticated exact path="/admin/beaconTypes/:_id/edit" component={EditBeaconType} {...props} />
             <Public path="/signup" component={Signup} {...props} />
             <Public path="/login" component={Login} {...props} />
             <Route path="/logout" component={Logout} {...props} />
