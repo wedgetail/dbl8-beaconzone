@@ -34,3 +34,17 @@ Picker.route('/api/events1', (params, request, response) => {
   response.writeHead(200);
   response.end(JSON.stringify(events));
 });
+
+Picker.route('/api/readers/config', (params, request, response) => {
+  // TODO: Wire this up to the actual params/data from readers.
+  // console.log(params);
+  // if (!params.query.apiKey) handleError(response, 403, 'Please pass an apiKey param with your request.');
+  // if (!params.query.reader) handleError(response, 403, 'Please pass a reader param with your request.');
+  // if (!params.query.maxEvents) handleError(response, 403, 'Please pass a maxEvents param as a number with your request.');
+
+  // const maxEvents = parseInt(params.query.maxEvents, 10);
+
+  // const events = Events.find({ 'message.rdr': params.query.reader }, { fields: { _id: 0 }, limit: maxEvents <= 999 ? maxEvents : 999 }).fetch();
+  // response.writeHead(200);
+  // response.end(JSON.stringify(events));
+});

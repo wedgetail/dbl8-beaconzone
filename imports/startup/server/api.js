@@ -1,7 +1,10 @@
+import '../../api/BeaconTypes/server/publications';
+
 import '../../api/Customers/methods';
 import '../../api/Customers/server/publications';
 
-import '../../api/BeaconTypes/server/publications';
+import '../../api/Dashboard/server/publications';
+import '../../api/Dashboard/methods';
 
 import '../../api/OAuth/server/methods';
 
