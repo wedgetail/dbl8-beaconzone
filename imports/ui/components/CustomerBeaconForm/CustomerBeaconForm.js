@@ -110,9 +110,9 @@ class CustomerBeaconForm extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {beacons.map(({ _id, beaconTypeCode, macAddress, mostRecentEvent }) => (
+            {beacons.map(({ _id, beaconType, macAddress, mostRecentEvent }) => (
               <tr key={_id}>
-                <td>{beaconTypeCode}</td>
+                <td>{beaconType}</td>
                 <td>{macAddress}</td>
                 <td>{mostRecentEvent && mostRecentEvent.createdAt}</td>
                 <td>{mostRecentEvent && mostRecentEvent.message.rdr}</td>

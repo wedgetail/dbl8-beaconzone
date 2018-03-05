@@ -97,9 +97,9 @@ Meteor.methods({
       throw new Meteor.Error('500', exception);
     }
   },
-  'customers.fetchLatestBeaconData': function customersFetchLatestBeaconData(customer, beaconTypeCode, beaconSearch) {
+  'customers.fetchLatestBeaconData': function customersFetchLatestBeaconData(customer, beaconType, beaconSearch) {
     check(customer, String);
-    check(beaconTypeCode, Match.OneOf(String, null));
+    check(beaconType, Match.OneOf(String, null));
     check(beaconSearch, Match.OneOf(Object, null));
 
     try {
@@ -121,7 +121,7 @@ Meteor.methods({
         };
       } else {
         const beaconQuery = { customer: customer };
-        if (beaconTypeCode && beaconTypeCode !== 'all') beaconQuery.beaconTypeCode = beaconTypeCode; // { beaconTypeCode: beaconTypeCode };
+        if (beaconType && beaconType !== 'all') beaconQuery.beaconType = beaconType; // { beaconType: beaconType };
         if (beaconSearch && beaconSearch.type === 'macAddress') beaconQuery.macAddress = new RegExp(beaconSearch.value, 'i'); // /aelkjre9r8era/i
 
         return {
