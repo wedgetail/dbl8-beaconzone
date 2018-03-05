@@ -1,75 +1,103 @@
 @import '../../stylesheets/mixins';
 @import '../../stylesheets/colors';
 
-.Index {
-  padding: 20px;
-  // background: $cb-red;
-  text-align: center;
-  border-radius: 3px;
-  color: #fff;
+// .Index {
+//   padding: 20px;
+//   // background: $cb-red;
+//   text-align: center;
+//   border-radius: 3px;
+//   color: #fff;
 
-  img {
-    width: 200px;
-    height: auto;
+//   img {
+//     width: 200px;
+//     height: auto;
+//   }
+
+//   h1 {
+//     font-size: 28px;
+//   }
+
+//   p {
+//     font-size: 18px;
+//     color: lighten($cb-red, 15%);
+//   }
+
+//   > div {
+//     display: inline-block;
+//     margin: 10px 0 0;
+
+//     .btn:first-child {
+//       margin-right: 10px;
+//     }
+
+//     .btn {
+//       border: none;
+//     }
+//   }
+
+//   footer {
+//     margin: 20px -20px -20px;
+//     border-top: 1px solid darken($cb-red, 10%);
+//     padding: 20px;
+
+//     p {
+//       font-size: 14px;
+//       line-height: 22px;
+//       color: lighten($cb-red, 35%);
+//       margin: 0;
+//     }
+
+//     p a {
+//       color: lighten($cb-red, 35%);
+//       text-decoration: underline;
+//     }
+//   }
+// }
+
+.Index .DashboardWidget {
+  border: 1px solid $gray-lighter;
+  border-radius: 3px;
+
+  header {
+    padding: 10px 15px;
+    border-bottom: 1px solid $gray-lighter;
+    text-align: center;
+
+    p {
+      margin: 0;
+    }
   }
 
   h1 {
-    font-size: 28px;
-  }
-
-  p {
-    font-size: 18px;
-    color: lighten($cb-red, 15%);
+    margin: 0;
   }
 
   > div {
-    display: inline-block;
-    margin: 10px 0 0;
-
-    .btn:first-child {
-      margin-right: 10px;
-    }
-
-    .btn {
-      border: none;
-    }
+    padding: 15px;
+    text-align: center;
   }
 
-  footer {
-    margin: 20px -20px -20px;
-    border-top: 1px solid darken($cb-red, 10%);
-    padding: 20px;
-
-    p {
-      font-size: 14px;
-      line-height: 22px;
-      color: lighten($cb-red, 35%);
-      margin: 0;
-    }
-
-    p a {
-      color: lighten($cb-red, 35%);
-      text-decoration: underline;
-    }
+  &:not(:last-child) {
+    margin-bottom: 15px;
   }
 }
 
-@include breakpoint(tablet) {
-  .Index {
-    padding: 30px;
+// @include breakpoint(tablet) {
+//   .Index {
+//     padding: 30px;
 
-    footer {
-      margin: 30px -30px -30px;
-    }
-  }
-}
+//     footer {
+//       margin: 30px -30px -30px;
+//     }
+//   }
+// }
 
-@include breakpoint(desktop) {
-  .Index {
-    padding: 40px;
+// @include breakpoint(desktop) {
+//   .Index {
+//     padding: 40px;
 
-    footer {
-      margin: 40px -40px -40px;
-    }
-  }
-}
+//     footer {
+//       margin: 40px -40px -40px;
+//     }
+//   }
+// }
