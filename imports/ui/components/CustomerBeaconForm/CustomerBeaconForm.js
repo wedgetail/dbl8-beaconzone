@@ -35,6 +35,7 @@ class CustomerBeaconForm extends React.Component {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
+        this.fetchBeaconData(); // Data is not reactive, this gets us an update.
         this.uuid.value = '';
         Bert.alert('UUID added!', 'success');
       }
@@ -50,6 +51,7 @@ class CustomerBeaconForm extends React.Component {
       if (error) {
         Bert.alert(error.reason.reason ? error.reason.reason : error.reason, 'danger');
       } else {
+        this.fetchBeaconData(); // Data is not reactive, this gets us an update.
         Bert.alert('UUID deleted!', 'success');
       }
     });
@@ -108,9 +110,9 @@ class CustomerBeaconForm extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {beacons.map(({ _id, beaconTypeCode, macAddress, mostRecentEvent }) => (
+            {beacons.map(({ _id, beaconType, macAddress, mostRecentEvent }) => (
               <tr key={_id}>
-                <td>{beaconTypeCode}</td>
+                <td>{beaconType}</td>
                 <td>{macAddress}</td>
                 <td>{mostRecentEvent && mostRecentEvent.createdAt}</td>
                 <td>{mostRecentEvent && mostRecentEvent.message.rdr}</td>

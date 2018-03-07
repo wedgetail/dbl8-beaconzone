@@ -1,6 +1,7 @@
 import seeder from '@cleverbeagle/seeder';
 import { Meteor } from 'meteor/meteor';
 import Customers from '../../api/Customers/Customers';
+import Dashboard from '../../api/Dashboard/Dashboard';
 
 const customersSeed = userId => ({
   collection: Customers,
@@ -68,3 +69,40 @@ seeder(Meteor.users, {
     };
   },
 });
+
+if (Dashboard.find().count() === 0) {
+  Dashboard.insert({
+    "name": "dashboard",
+    "activeReaders": 10,
+    "activeBeacons": 259,
+    "readersNotReporting": 5,
+    "trafficPerHour": [
+      {
+        "name": "8:30",
+        "readers": 15,
+        "events": 350,
+      },
+      {
+        "name": "8:35",
+        "readers": 25,
+        "events": 150,
+      },
+      {
+        "name": "8:40",
+        "readers": 35,
+        "events": 1250,
+      },
+      {
+        "name": "8:45",
+        "readers": 45,
+        "events": 35,
+      },
+      {
+        "name": "8:50",
+        "readers": 55,
+        "events": 78,
+      },
+    ],
+  });
+}
+
