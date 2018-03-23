@@ -2,6 +2,7 @@ import bodyParser from 'body-parser';
 import { Picker } from 'meteor/meteorhacks:picker';
 import Events from '../Events/Events';
 import Customers from '../Customers/Customers';
+import Readers from '../Readers/Readers';
 
 Picker.middleware(bodyParser.json());
 
@@ -101,4 +102,19 @@ Picker.route('/api/customers/setup', (params, request, response) => {
   // const maxEvents = parseInt(params.query.maxEvents, 10);
 
   // const events = Events.find({ 'message.rdr': params.query.reader }, { limit: maxEvents <= 999 ? maxEvents : 999 }).fetch();
+});
+
+Picker.route('/api/customers/readers', (params, request, response) => {
+  if (request.method === 'GET') {
+    const customer = Customers.findOne({ 'users.userId': params.query.userId }, { fields: { _id: 1 } });
+
+    if (customer) {
+      const readers = Readers.find({ customer: customer._id }).fetch();
+      console.log(readers);
+      response.writeHead(200);
+      response.end(JSON.stringify({ readers: readers }));
+    } else {
+      handleError(response, 404, 'No readers found.');
+    }
+  }
 });
