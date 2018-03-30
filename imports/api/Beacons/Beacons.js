@@ -36,6 +36,11 @@ const BeaconsSchema = new SimpleSchema({
     label: 'The ID of the customer this beacon belongs to.',
     optional: true,
   },
+  active: {
+    type: Boolean,
+    label: 'Is the beacon active?',
+    optional: true,
+  },
 });
 
 Beacons.attachSchema(BeaconsSchema);

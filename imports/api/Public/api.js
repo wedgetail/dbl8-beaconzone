@@ -3,6 +3,8 @@ import { Picker } from 'meteor/meteorhacks:picker';
 import Events from '../Events/Events';
 import Customers from '../Customers/Customers';
 import Readers from '../Readers/Readers';
+import Beacons from '../Beacons/Beacons';
+import BeaconTypes from '../BeaconTypes/BeaconTypes';
 
 Picker.middleware(bodyParser.json());
 
@@ -115,6 +117,30 @@ Picker.route('/api/customers/readers', (params, request, response) => {
       response.end(JSON.stringify({ readers: readers }));
     } else {
       handleError(response, 404, 'No readers found.');
+    }
+  }
+});
+
+Picker.route('/api/customers/beacons', (params, request, response) => {
+  if (request.method === 'GET') {
+    const customer = Customers.findOne({ 'users.userId': params.query.userId }, { fields: { _id: 1 } });
+
+    if (customer) {
+      const beacons = Beacons.find({ customer: customer._id }, { fields: { whitelisted: 0 } }).fetch()
+        .map((beacon) => {
+          const beaconType = BeaconTypes.findOne({ beaconTypeCode: beacon.beaconType }, { fields: { title: 1 } });
+          const lastEvent = Events.findOne({ 'message.mac': beacon.macAddress }, { limit: 1, sort: { createdAt: -1 } });
+          return {
+            ...beacon,
+            beaconType: beaconType.title,
+            currentReader: lastEvent.message.rdr, // The serial number of the reader that last saw this beacon.
+          };
+        });
+      console.log(beacons);
+      response.writeHead(200);
+      response.end(JSON.stringify({ beacons: beacons }));
+    } else {
+      handleError(response, 404, 'No beacons found.');
     }
   }
 });
