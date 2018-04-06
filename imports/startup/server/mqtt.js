@@ -116,7 +116,7 @@ Mongo.Collection.prototype.mqttSubscribe = function(topics) {
     }
 };
 
-// Events.mqttConnect("mqtt://mqtt1.dbl8.bz:1883", ["dbl8-2"], {insert: true, raw: false}, {});
+Events.mqttConnect("mqtt://mqtt1.dbl8.bz:1883", ["dbl8-2"], {insert: true, raw: false}, {});
 
 // Events.find({}).observe({
 //   added(event) {

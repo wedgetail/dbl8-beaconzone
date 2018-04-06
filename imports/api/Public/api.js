@@ -134,6 +134,7 @@ Picker.route('/api/customers/beacons', (params, request, response) => {
             ...beacon,
             beaconType: beaconType.title,
             currentReader: lastEvent.message.rdr, // The serial number of the reader that last saw this beacon.
+            lastSeen: lastEvent.createdAt,
           };
         });
       console.log(beacons);
