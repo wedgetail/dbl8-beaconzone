@@ -13,9 +13,19 @@ class CustomerForm extends React.Component {
 
   componentDidMount() {
   	const component = this;
-  	validate(this.editCustomerForm, {
-  		submitHandler() { component.handleSubmit(); }
-  	});
+		validate(this.editCustomerForm, {
+			rules: {
+				databaseConnectionString: {
+					required: true,
+				},
+			},
+			messages: {
+				databaseConnectionString: {
+					required: 'A database connection string is required.',
+				},
+			},
+			submitHandler() { component.handleSubmit(); }
+		});
   }
 
   handleSubmit() {
@@ -29,7 +39,8 @@ class CustomerForm extends React.Component {
 		  zip: this.customerZip.value,
 		  mobile: this.customerMobile.value,
 		  telephone: this.customerTelephone.value,
-		  email: this.customerEmail.value,
+			email: this.customerEmail.value,
+			databaseConnectionString: this.databaseConnectionString.value,
   	};
 
   	Meteor.call('customers.update', customer, (error, response) => {
@@ -161,6 +172,17 @@ class CustomerForm extends React.Component {
 					  </Col>
 				  </Row>
 			  </FormGroup>
+				<FormGroup>
+					<ControlLabel>Database Connection String</ControlLabel>
+					<input
+						type="text"
+						name="databaseConnectionString"
+						defaultValue={customer.databaseConnectionString}
+						ref={databaseConnectionString => (this.databaseConnectionString = databaseConnectionString)}
+						className="form-control"
+						placeholder="mongodb://somedomain.com:27017/database"
+					/>
+				</FormGroup>
 			  <Button type="submit" bsStyle="success">Save</Button>
 		  </form>
     </div>);

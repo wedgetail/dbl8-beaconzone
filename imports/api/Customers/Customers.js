@@ -17,6 +17,10 @@ Customers.deny({
 });
 
 const CustomersSchema = new SimpleSchema({
+  databaseConnectionString: {
+    type: String,
+    label: 'The database connection string for the customer\'s database.',
+  },
   users: {
     type: Array,
     label: 'Users who have access to this customer.',

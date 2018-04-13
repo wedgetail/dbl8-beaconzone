@@ -66,14 +66,14 @@ Picker.route('/api/customers/setup', (params, request, response) => {
     if (!params.query.customerCode) handleError(response, 403, 'Please pass a customerCode param with your request.');
     if (!params.query.emailAddress) handleError(response, 403, 'Please pass an emailAddress param with your request.');
 
-    const customerIsValid = !!Customers.findOne({
+    const customer = Customers.findOne({
       topicCode: params.query.customerCode,
       email: params.query.emailAddress,
     });
 
-    if (customerIsValid) {
+    if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ customerIsValid }));
+      response.end(JSON.stringify({ customerIsValid: true, databaseConnectionString: customer.databaseConnectionString }));
     } else {
       // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
       response.writeHead(401); // 401 === HTTP unauthorized.
@@ -104,6 +104,22 @@ Picker.route('/api/customers/setup', (params, request, response) => {
   // const maxEvents = parseInt(params.query.maxEvents, 10);
 
   // const events = Events.find({ 'message.rdr': params.query.reader }, { limit: maxEvents <= 999 ? maxEvents : 999 }).fetch();
+});
+
+Picker.route('/api/customers/login', (params, request, response) => {
+  if (request.method === 'GET') {
+    if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
+
+    const customer = Customers.findOne({ 'users.userId': params.query.userId });
+
+    if (customer) {
+      response.writeHead(200);
+      response.end(JSON.stringify({ ok: true, userId: params.query.userId, databaseConnectionString: customer.databaseConnectionString }));
+    } else {
+      response.writeHead(500);
+      response.end('We couldn\'t find a customer with this userId.');
+    }
+  }
 });
 
 Picker.route('/api/customers/readers', (params, request, response) => {
