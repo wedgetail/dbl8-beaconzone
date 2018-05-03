@@ -116,8 +116,8 @@ Picker.route('/api/customers/login', (params, request, response) => {
       response.writeHead(200);
       response.end(JSON.stringify({ ok: true, userId: params.query.userId, databaseConnectionString: customer.databaseConnectionString }));
     } else {
-      response.writeHead(500);
-      response.end('We couldn\'t find a customer with this userId.');
+      response.writeHead(403);
+      response.end(JSON.stringify({ userId: params.query.userId, code: 403, message: 'Authentication error. Check with your administrator to make sure you have access.' }));
     }
   }
 });
@@ -128,7 +128,6 @@ Picker.route('/api/customers/readers', (params, request, response) => {
 
     if (customer) {
       const readers = Readers.find({ customer: customer._id }).fetch();
-      console.log(readers);
       response.writeHead(200);
       response.end(JSON.stringify({ readers: readers }));
     } else {
@@ -158,6 +157,22 @@ Picker.route('/api/customers/beacons', (params, request, response) => {
       response.end(JSON.stringify({ beacons: beacons }));
     } else {
       handleError(response, 404, 'No beacons found.');
+    }
+  }
+
+  if (request.method === 'PUT') {
+    if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
+    if (!request.body.beaconMacAddress) handleError(response, 403, 'Please pass a beaconMacAddress param with your request (or else!).');
+    if (!request.body.update) handleError(response, 403, 'Please pass an update param with your request (or else!).');
+
+    const customer = Customers.findOne({ 'users.userId': request.body.userId }, { fields: { _id: 1 } });
+
+    if (customer) {
+      Beacons.update({ macAddress: request.body.beaconMacAddress }, { $set: request.body.update });
+      response.writeHead(200);
+      response.end('Beacon updated');
+    } else {
+      handleError(response, 404, 'Sorry, we couldn\'t find a customer with your userId.');
     }
   }
 });
