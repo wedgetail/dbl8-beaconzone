@@ -20,7 +20,7 @@ const ReadersSchema = new SimpleSchema({
     type: String,
     label: 'The ID of the customer who owns this reader.',
   },
-  readerActive: {
+  active: {
     type: Boolean,
     label: 'Is this reader active?',
   },

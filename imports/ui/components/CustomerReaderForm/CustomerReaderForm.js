@@ -34,7 +34,7 @@ class CustomerReaderForm extends React.Component {
             const customerReaders = results.data.map((reader) => ({
               ...reader,
               customer: component.props.customerId,
-              readerActive: true,
+              active: true,
             }));
 
             Meteor.call('customers.uploadReadersCSV', customerReaders, (error, readersAdded) => {
@@ -119,9 +119,9 @@ class CustomerReaderForm extends React.Component {
     			</tr>
     		</thead>
     		<tbody>
-          {this.state.readers.map(({ _id, readerActive, customJSON, serialNumber, macAddress, mostRecentEvent }) => (
+          {this.state.readers.map(({ _id, active, customJSON, serialNumber, macAddress, mostRecentEvent }) => (
             <tr>
-              <td><ToggleSwitch id={_id} toggled={readerActive} onLabel="Yes" offLabel="No" onToggle={(readerId, isReaderActive) => this.handleUpdateReaderStatus({ _id: readerId, readerActive: isReaderActive })} /></td>
+              <td><ToggleSwitch id={_id} toggled={active} onLabel="Yes" offLabel="No" onToggle={(readerId, isReaderActive) => this.handleUpdateReaderStatus({ _id: readerId, active: isReaderActive })} /></td>
               <td><a href="#">{customJSON ? <Button bsStyle="info" onClick={() => this.setState({ showEditJSONModal: 'custom', jsonToEdit: customJSON, readerId: _id })}>Edit Custom JSON</Button> : <Button bsStyle="success" onClick={() => this.setState({ showEditJSONModal: 'custom', jsonToEdit: '', readerId: _id })}>Add Custom JSON</Button>}</a></td>
               <td>{serialNumber}</td>
               <td>{macAddress}</td>
@@ -146,4 +146,3 @@ CustomerReaderForm.propTypes = {
 };
 
 export default CustomerReaderForm;
-

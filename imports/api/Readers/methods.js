@@ -7,7 +7,7 @@ Meteor.methods({
     check(status, Object);
 
     try {
-      return Readers.update({ _id: status._id }, { $set: { readerActive: status.readerActive } });
+      return Readers.update({ _id: status._id }, { $set: { active: status.active } });
     } catch (exception) {
       console.warn(exception);
       throw new Meteor.Error('500', exception);

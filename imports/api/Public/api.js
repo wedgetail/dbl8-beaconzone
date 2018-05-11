@@ -134,6 +134,22 @@ Picker.route('/api/customers/readers', (params, request, response) => {
       handleError(response, 404, 'No readers found.');
     }
   }
+
+  if (request.method === 'PUT') {
+    if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
+    if (!request.body.readerMacAddress) handleError(response, 403, 'Please pass a readerMacAddress param with your request (or else!).');
+    if (!request.body.update) handleError(response, 403, 'Please pass an update param with your request (or else!).');
+
+    const customer = Customers.findOne({ 'users.userId': request.body.userId }, { fields: { _id: 1 } });
+
+    if (customer) {
+      Readers.update({ macAddress: request.body.readerMacAddress }, { $set: request.body.update });
+      response.writeHead(200);
+      response.end('Reader updated');
+    } else {
+      handleError(response, 404, 'Sorry, we couldn\'t find a customer with your userId.');
+    }
+  }
 });
 
 Picker.route('/api/customers/beacons', (params, request, response) => {
