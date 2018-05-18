@@ -14,7 +14,6 @@ const handleError = (response, code, message) => {
 };
 
 Picker.route('/api/events', (params, request, response) => {
-  console.log(params);
   if (!params.query.apiKey) handleError(response, 403, 'Please pass an apiKey param with your request.');
   if (!params.query.reader) handleError(response, 403, 'Please pass a reader param with your request.');
   if (!params.query.maxEvents) handleError(response, 403, 'Please pass a maxEvents param as a number with your request.');
@@ -27,7 +26,6 @@ Picker.route('/api/events', (params, request, response) => {
 });
 
 Picker.route('/api/events1', (params, request, response) => {
-  console.log(params);
   if (!params.query.apiKey) handleError(response, 403, 'Please pass an apiKey param with your request.');
   if (!params.query.reader) handleError(response, 403, 'Please pass a reader param with your request.');
   if (!params.query.maxEvents) handleError(response, 403, 'Please pass a maxEvents param as a number with your request.');
@@ -41,7 +39,6 @@ Picker.route('/api/events1', (params, request, response) => {
 
 Picker.route('/api/readers/config', (params, request, response) => {
   // TODO: Wire this up to the actual params/data from readers.
-  // console.log(params);
   // if (!params.query.apiKey) handleError(response, 403, 'Please pass an apiKey param with your request.');
   // if (!params.query.reader) handleError(response, 403, 'Please pass a reader param with your request.');
   // if (!params.query.maxEvents) handleError(response, 403, 'Please pass a maxEvents param as a number with your request.');
@@ -73,7 +70,7 @@ Picker.route('/api/customers/setup', (params, request, response) => {
 
     if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ customerIsValid: true, databaseConnectionString: customer.databaseConnectionString }));
+      response.end(JSON.stringify({ customerIsValid: true, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
       response.writeHead(401); // 401 === HTTP unauthorized.
@@ -114,7 +111,7 @@ Picker.route('/api/customers/login', (params, request, response) => {
 
     if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ ok: true, userId: params.query.userId, databaseConnectionString: customer.databaseConnectionString }));
+      response.end(JSON.stringify({ ok: true, userId: params.query.userId, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       response.writeHead(403);
       response.end(JSON.stringify({ userId: params.query.userId, code: 403, message: 'Authentication error. Check with your administrator to make sure you have access.' }));
@@ -168,7 +165,7 @@ Picker.route('/api/customers/beacons', (params, request, response) => {
             lastSeen: lastEvent.createdAt,
           };
         });
-      console.log(beacons);
+
       response.writeHead(200);
       response.end(JSON.stringify({ beacons: beacons }));
     } else {

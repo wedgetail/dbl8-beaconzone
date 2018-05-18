@@ -29,14 +29,13 @@ const Customers = ({
   <div className="Customers">
     <div className="page-header clearfix">
       <h4 className="pull-left">Customers</h4>
-      <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Customer</Link>
+      <Link className="btn btn-success btn-sm pull-right" to={`${match.url}/new`}>Add Customer</Link>
     </div>
     {customers.length ?
       <Table responsive>
         <thead>
           <tr>
             <th>Name</th>
-            <th />
             <th />
           </tr>
         </thead>
@@ -46,20 +45,18 @@ const Customers = ({
           }) => (
             <tr key={_id}>
               <td>{name}</td>
-              <td>
+              <td className="text-right">
                 <Button
                   bsStyle="primary"
+                  bsSize="small"
                   onClick={() => history.push(`${match.url}/${_id}`)}
-                  block
                 >
                   Manage
                 </Button>
-              </td>
-              <td>
                 <Button
                   bsStyle="danger"
+                  bsSize="small"
                   onClick={() => handleRemove(_id)}
-                  block
                 >
                   Delete
                 </Button>

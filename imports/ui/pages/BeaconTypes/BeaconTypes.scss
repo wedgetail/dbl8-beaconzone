@@ -1,3 +1,11 @@
 .BeaconTypes table tbody tr td {
   vertical-align: middle;
 }
+
+.BeaconTypes table tbody tr td:last-child {
+  padding-right: 0;
+}
+
+.BeaconTypes table tbody tr td .btn:not(:first-child) {
+  margin-left: 10px;
+}

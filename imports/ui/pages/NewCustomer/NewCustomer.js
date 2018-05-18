@@ -19,7 +19,6 @@ class NewCustomer extends React.Component {
   	  if (error) {
   	    Bert.alert(error.reason, 'danger');
   	  } else {
-  	  	console.log(customerId);
   	    Bert.alert('Customer created!', 'success');
         this.props.history.push(`/admin/customers/${customerId}`);
   	  }

@@ -29,7 +29,7 @@ const BeaconTypes = ({
   <div className="BeaconTypes">
     <div className="page-header clearfix">
       <h4 className="pull-left">Beacon Types</h4>
-      <Link className="btn btn-success pull-right" to={`${match.url}/new`}>Add Beacon Type</Link>
+      <Link className="btn btn-success btn-sm pull-right" to={`${match.url}/new`}>Add Beacon Type</Link>
     </div>
     {beaconTypes.length ?
       <Table responsive>
@@ -38,7 +38,6 @@ const BeaconTypes = ({
             <th>Title</th>
             <th>Last Updated</th>
             <th>Created</th>
-            <th />
             <th />
           </tr>
         </thead>
@@ -50,20 +49,18 @@ const BeaconTypes = ({
               <td>{title}</td>
               <td>{timeago(updatedAt)}</td>
               <td>{monthDayYearAtTime(createdAt)}</td>
-              <td>
+              <td className="text-right">
                 <Button
                   bsStyle="primary"
+                  bsSize="small"
                   onClick={() => history.push(`${match.url}/${_id}`)}
-                  block
                 >
                   View
                 </Button>
-              </td>
-              <td>
                 <Button
                   bsStyle="danger"
+                  bsSize="small"
                   onClick={() => handleRemove(_id)}
-                  block
                 >
                   Delete
                 </Button>

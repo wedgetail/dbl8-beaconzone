@@ -18,10 +18,16 @@ class CustomerForm extends React.Component {
 				databaseConnectionString: {
 					required: true,
 				},
+				eventViewerDashboardTimeout: {
+					required: true,
+				},
 			},
 			messages: {
 				databaseConnectionString: {
 					required: 'A database connection string is required.',
+				},
+				eventViewerDashboardTimeout: {
+					required: 'An event viewer dashboard timeout is required.',
 				},
 			},
 			submitHandler() { component.handleSubmit(); }
@@ -41,6 +47,7 @@ class CustomerForm extends React.Component {
 		  telephone: this.customerTelephone.value,
 			email: this.customerEmail.value,
 			databaseConnectionString: this.databaseConnectionString.value,
+			eventViewerDashboardTimeout: parseInt(this.eventViewerDashboardTimeout.value, 10),
   	};
 
   	Meteor.call('customers.update', customer, (error, response) => {
@@ -181,6 +188,17 @@ class CustomerForm extends React.Component {
 						ref={databaseConnectionString => (this.databaseConnectionString = databaseConnectionString)}
 						className="form-control"
 						placeholder="mongodb://somedomain.com:27017/database"
+					/>
+				</FormGroup>
+				<FormGroup>
+					<ControlLabel>Event Viewer Dashboard Timeout (Seconds)</ControlLabel>
+					<input
+						type="number"
+						name="eventViewerDashboardTimeout"
+						defaultValue={customer.eventViewerDashboardTimeout}
+						ref={eventViewerDashboardTimeout => (this.eventViewerDashboardTimeout = eventViewerDashboardTimeout)}
+						className="form-control"
+						placeholder="60"
 					/>
 				</FormGroup>
 			  <Button type="submit" bsStyle="success">Save</Button>

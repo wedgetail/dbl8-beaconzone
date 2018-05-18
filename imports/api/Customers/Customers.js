@@ -21,6 +21,10 @@ const CustomersSchema = new SimpleSchema({
     type: String,
     label: 'The database connection string for the customer\'s database.',
   },
+  eventViewerDashboardTimeout: {
+    type: Number,
+    label: 'The timeout for the customer\'s event viewer dashboard (in seconds).',
+  },
   users: {
     type: Array,
     label: 'Users who have access to this customer.',
