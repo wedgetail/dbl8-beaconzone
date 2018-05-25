@@ -48,6 +48,7 @@ class CustomerForm extends React.Component {
 			email: this.customerEmail.value,
 			databaseConnectionString: this.databaseConnectionString.value,
 			eventViewerDashboardTimeout: parseInt(this.eventViewerDashboardTimeout.value, 10),
+			numberOfEventViewerUsers: parseInt(this.numberOfEventViewerUsers.value, 10),
   	};
 
   	Meteor.call('customers.update', customer, (error, response) => {
@@ -190,17 +191,34 @@ class CustomerForm extends React.Component {
 						placeholder="mongodb://somedomain.com:27017/database"
 					/>
 				</FormGroup>
-				<FormGroup>
-					<ControlLabel>Event Viewer Dashboard Timeout (Seconds)</ControlLabel>
-					<input
-						type="number"
-						name="eventViewerDashboardTimeout"
-						defaultValue={customer.eventViewerDashboardTimeout}
-						ref={eventViewerDashboardTimeout => (this.eventViewerDashboardTimeout = eventViewerDashboardTimeout)}
-						className="form-control"
-						placeholder="60"
-					/>
-				</FormGroup>
+				<Row>
+					<Col xs={6}>
+						<FormGroup>
+							<ControlLabel>Event Viewer Dashboard Timeout (Seconds)</ControlLabel>
+							<input
+								type="number"
+								name="eventViewerDashboardTimeout"
+								defaultValue={customer.eventViewerDashboardTimeout}
+								ref={eventViewerDashboardTimeout => (this.eventViewerDashboardTimeout = eventViewerDashboardTimeout)}
+								className="form-control"
+								placeholder="60"
+							/>
+						</FormGroup>
+					</Col>
+					<Col xs={6}>
+						<FormGroup>
+							<ControlLabel>Number of Event Viewer Users</ControlLabel>
+							<input
+								type="number"
+								name="numberOfEventViewerUsers"
+								defaultValue={customer.numberOfEventViewerUsers}
+								ref={numberOfEventViewerUsers => (this.numberOfEventViewerUsers = numberOfEventViewerUsers)}
+								className="form-control"
+								placeholder="5"
+							/>
+						</FormGroup>
+					</Col>
+				</Row>
 			  <Button type="submit" bsStyle="success">Save</Button>
 		  </form>
     </div>);

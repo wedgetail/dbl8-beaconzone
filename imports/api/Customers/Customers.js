@@ -25,6 +25,11 @@ const CustomersSchema = new SimpleSchema({
     type: Number,
     label: 'The timeout for the customer\'s event viewer dashboard (in seconds).',
   },
+  numberOfEventViewerUsers: {
+    type: Number,
+    defaultValue: 5,
+    label: 'The number of users allowed to access the event viewer dashboard.',
+  },
   users: {
     type: Array,
     label: 'Users who have access to this customer.',

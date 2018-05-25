@@ -103,6 +103,25 @@ Picker.route('/api/customers/setup', (params, request, response) => {
   // const events = Events.find({ 'message.rdr': params.query.reader }, { limit: maxEvents <= 999 ? maxEvents : 999 }).fetch();
 });
 
+Picker.route('/api/customers/adduser', (params, request, response) => {
+  if (request.method === 'POST') {
+    if (!request.body.customerId) handleError(response, 403, 'Please pass a customerId param with your request.');
+    if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
+    if (!request.body.isAdmin) handleError(response, 403, 'Please pass an isAdmin param with your request.');
+
+    Customers.update({
+      _id: request.body.customerId,
+    }, {
+      $addToSet: {
+        users: { userId: request.body.userId, isAdmin: request.body.isAdmin },
+      },
+    });
+
+    response.writeHead(200);
+    response.end('User successfully added to customer.');
+  }
+});
+
 Picker.route('/api/customers/login', (params, request, response) => {
   if (request.method === 'GET') {
     if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
@@ -115,6 +134,38 @@ Picker.route('/api/customers/login', (params, request, response) => {
     } else {
       response.writeHead(403);
       response.end(JSON.stringify({ userId: params.query.userId, code: 403, message: 'Authentication error. Check with your administrator to make sure you have access.' }));
+    }
+  }
+});
+
+Picker.route('/api/customers/customerId', (params, request, response) => {
+  if (request.method === 'GET') {
+    if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
+
+    const customer = Customers.findOne({ 'users.userId': params.query.userId });
+
+    if (customer) {
+      response.writeHead(200);
+      response.end(JSON.stringify({ ok: true, customerId: customer._id }));
+    } else {
+      response.writeHead(403);
+      response.end(JSON.stringify({ userId: params.query.userId, code: 403, message: 'Authentication error. Check with your administrator to make sure you have access.' }));
+    }
+  }
+});
+
+Picker.route('/api/customers/maxusers', (params, request, response) => {
+  if (request.method === 'GET') {
+    if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
+
+    const customer = Customers.findOne({ 'users.userId': params.query.userId });
+
+    if (customer && customer.users.length < customer.numberOfEventViewerUsers) {
+      response.writeHead(200);
+      response.end(JSON.stringify({ ok: true, customerId: customer._id, customerName: customer.name }));
+    } else {
+      response.writeHead(403);
+      response.end(JSON.stringify({ ok: false, error: 'You\'ve reached your maximum number of users.' }));
     }
   }
 });
