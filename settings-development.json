@@ -1,7 +1,13 @@
 {
-  "public": {},
+  "public": {
+    "productName": "DBL8 BeaconZone",
+    "copyrightStartYear": "2018",
+    "twitterUsername": "dbl8",
+    "facebookUsername": "dbl8",
+    "productAddress": ""
+  },
   "private": {
-    "MAIL_URL": "",
+    "MAIL_URL": "smtp://marvin%40dbl8.com:BeaconZ0ne4073@smtp.office365.com:587",
     "OAuth": {
       "facebook": {
         "appId": "",
@@ -18,6 +24,7 @@
         "secret": "",
         "loginStyle": "popup"
       }
-    }
+    },
+    "supportEmail": "DBL8 BeaconZone <marvin@dbl8.com>"
   }
 }

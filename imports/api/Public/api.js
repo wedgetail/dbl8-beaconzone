@@ -70,7 +70,7 @@ Picker.route('/api/customers/setup', (params, request, response) => {
 
     if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ customerIsValid: true, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
+      response.end(JSON.stringify({ customerIsValid: true, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
       response.writeHead(401); // 401 === HTTP unauthorized.
@@ -105,9 +105,10 @@ Picker.route('/api/customers/setup', (params, request, response) => {
 
 Picker.route('/api/customers/adduser', (params, request, response) => {
   if (request.method === 'POST') {
+    console.log(request.body);
     if (!request.body.customerId) handleError(response, 403, 'Please pass a customerId param with your request.');
     if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
-    if (!request.body.isAdmin) handleError(response, 403, 'Please pass an isAdmin param with your request.');
+    if (typeof request.body.isAdmin === 'undefined') handleError(response, 403, 'Please pass an isAdmin param with your request.');
 
     Customers.update({
       _id: request.body.customerId,
@@ -130,7 +131,7 @@ Picker.route('/api/customers/login', (params, request, response) => {
 
     if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ ok: true, userId: params.query.userId, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
+      response.end(JSON.stringify({ ok: true, userId: params.query.userId, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       response.writeHead(403);
       response.end(JSON.stringify({ userId: params.query.userId, code: 403, message: 'Authentication error. Check with your administrator to make sure you have access.' }));

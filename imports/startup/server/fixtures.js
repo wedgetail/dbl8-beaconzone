@@ -70,6 +70,22 @@ seeder(Meteor.users, {
   },
 });
 
+seeder(Meteor.users, {
+  environments: ['development', 'staging', 'production'],
+  noLimit: true,
+  data: [{
+    email: 'admin@dbl8.com',
+    password: 'aceisdeaf4073',
+    profile: {
+      name: {
+        first: 'Marvin',
+        last: 'Percival',
+      },
+    },
+    roles: ['admin'],
+  }],
+});
+
 if (Dashboard.find().count() === 0) {
   Dashboard.insert({
     "name": "dashboard",
@@ -105,4 +121,3 @@ if (Dashboard.find().count() === 0) {
     ],
   });
 }
-

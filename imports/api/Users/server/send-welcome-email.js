@@ -5,13 +5,13 @@ import getOAuthProfile from '../../../modules/get-oauth-profile';
 export default (options, user) => {
   const OAuthProfile = getOAuthProfile(options, user);
 
-  const applicationName = 'Application Name';
+  const applicationName = 'DBL8 BeaconZone';
   const firstName = OAuthProfile ? OAuthProfile.name.first : options.profile.name.first;
   const emailAddress = OAuthProfile ? OAuthProfile.email : options.email;
 
   return sendEmail({
     to: emailAddress,
-    from: `${applicationName} <support@application.com>`,
+    from: Meteor.settings.private.supportEmail,
     subject: `[${applicationName}] Welcome, ${firstName}!`,
     template: 'welcome',
     templateVars: {

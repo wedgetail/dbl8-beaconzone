@@ -41,6 +41,7 @@ const App = props => (
       <div className="App">
         {props.authenticated ?
           <VerifyEmailAlert
+            user={props.user}
             userId={props.userId}
             emailVerified={props.emailVerified}
             emailAddress={props.emailAddress}
@@ -104,6 +105,7 @@ export default withTracker(() => {
     name: name || emailAddress,
     roles: !loading && Roles.getRolesForUser(userId),
     userId,
+    user,
     emailAddress,
     emailVerified: user && user.emails ? user && user.emails && user.emails[0].verified : true,
   };
