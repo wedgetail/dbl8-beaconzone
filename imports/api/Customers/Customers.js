@@ -17,6 +17,11 @@ Customers.deny({
 });
 
 const CustomersSchema = new SimpleSchema({
+  hostedByDbl8: {
+    type: Boolean,
+    label: 'Is this customer relying on DBL8 for hosting their event viewer?',
+    defaultValue: true,
+  },
   databaseConnectionString: {
     type: String,
     label: 'The database connection string for the customer\'s database.',

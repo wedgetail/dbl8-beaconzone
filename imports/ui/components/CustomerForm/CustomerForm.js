@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { FormGroup, ControlLabel, Row, Col, Button } from 'react-bootstrap';
 import StateSelector from '../StateSelector/StateSelector';
+import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import validate from '../../../modules/validate';
 
 class CustomerForm extends React.Component {
@@ -9,6 +10,7 @@ class CustomerForm extends React.Component {
     super(props);
     // this.state = {};
     this.handleSubmit = this.handleSubmit.bind(this);
+    this.handleSendAdminInvite = this.handleSendAdminInvite.bind(this);
   }
 
   componentDidMount() {
@@ -48,7 +50,8 @@ class CustomerForm extends React.Component {
 			email: this.customerEmail.value,
 			databaseConnectionString: this.databaseConnectionString.value,
 			eventViewerDashboardTimeout: parseInt(this.eventViewerDashboardTimeout.value, 10),
-			numberOfEventViewerUsers: parseInt(this.numberOfEventViewerUsers.value, 10),
+      numberOfEventViewerUsers: parseInt(this.numberOfEventViewerUsers.value, 10),
+      hostedByDbl8: this.hostedByDbl8.state.toggled,
   	};
 
   	Meteor.call('customers.update', customer, (error, response) => {
@@ -58,7 +61,23 @@ class CustomerForm extends React.Component {
   	    Bert.alert('Customer updated!', 'success');
   	  }
   	});
-  }
+	}
+
+	handleSendAdminInvite() {
+    const { customer } = this.props;
+
+		if (customer.email) {
+			Meteor.call('customers.inviteAdmin', customer._id, (error) => {
+				if (error) {
+					Bert.alert(error.reason, 'danger');
+				} else {
+					Bert.alert('Invite sent!', 'success');
+				}
+			});
+		} else {
+			Bert.alert('Please add an email address to the customer first.', 'danger');
+		}
+	}
 
   render() {
   	const { customer } = this.props;
@@ -66,7 +85,7 @@ class CustomerForm extends React.Component {
 			<form ref={editCustomerForm => (this.editCustomerForm = editCustomerForm)} onSubmit={(event) => event.preventDefault()}>
 			  <h4 className="page-header">Customer Contact Details</h4>
 			  <Row>
-			  	<Col xs={12} sm={8}>
+			  	<Col xs={12} sm={5}>
 			  	  <FormGroup>
 						  <ControlLabel>Customer Name</ControlLabel>
 						  <input
@@ -77,7 +96,7 @@ class CustomerForm extends React.Component {
 						  />
 						</FormGroup>
 			  	</Col>
-			  	<Col xs={12} sm={4}>
+			  	<Col xs={12} sm={3}>
 			  	  <FormGroup>
 						  <ControlLabel>Topic Code</ControlLabel>
 						  <input
@@ -88,6 +107,12 @@ class CustomerForm extends React.Component {
 							  defaultValue={customer.topicCode}
 							  ref={topicCode => (this.topicCode = topicCode)}
 						  />
+						</FormGroup>
+			  	</Col>
+			  	<Col xs={12} sm={4}>
+			  	  <FormGroup>
+						  <ControlLabel>Event Viewer Hosted by DBL8?</ControlLabel>
+						  <ToggleSwitch style={{ marginTop: '6px' }} ref={hostedByDbl8 => (this.hostedByDbl8 = hostedByDbl8)} toggled={customer.hostedByDbl8} />
 						</FormGroup>
 			  	</Col>
 			  </Row>
@@ -167,7 +192,7 @@ class CustomerForm extends React.Component {
 					  </Col>
 				  </Row>
 				  <Row>
-					  <Col xs={8}>
+					  <Col xs={4}>
 						  <ControlLabel>Email</ControlLabel>
 						  <input
 							  type="text"
@@ -178,6 +203,9 @@ class CustomerForm extends React.Component {
 							  placeholder="Email"
 						  />
 					  </Col>
+					  {customer.email ? <Col xs={3}>
+							<Button type="button" style={{ marginTop: '24px' }} bsStyle="primary" onClick={this.handleSendAdminInvite}>Send Invite</Button>
+					  </Col> : ''}
 				  </Row>
 			  </FormGroup>
 				<FormGroup>
@@ -226,7 +254,7 @@ class CustomerForm extends React.Component {
 }
 
 CustomerForm.propTypes = {
-  // prop: PropTypes.string.isRequired,
+  customer: PropTypes.object.isRequired,
 };
 
 export default CustomerForm;

@@ -24,11 +24,12 @@ class ToggleSwitch extends React.Component {
   }
 
   render() {
-    const { onLabel, offLabel } = this.props;
+    const { onLabel, offLabel, style } = this.props;
     const { toggled } = this.state;
     return (<div
       className={ `ToggleSwitch ${toggled ? 'yes' : 'no'}` }
       onClick={ this.toggleSwitch }
+      style={style}
     >
       <input ref="checkbox" type="checkbox" hidden defaultChecked={ toggled } />
       <div className="handle">

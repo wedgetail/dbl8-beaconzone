@@ -1,0 +1,10 @@
+Welcome to {{applicationName}}. {{#if hostedByDbl8}}Your data is hosted by DBL8.{{else}}Make sure you've set up your server to host your event viewer data.{{/if}}
+
+{{#if hostedByDbl8}}When you visit the link below, enter the Customer Code <strong>{{customerCode}}</strong> and this Email Address ({{customerEmail}}) to complete setup.{{/if}}
+
+Ready to get started?
+
+[{{url}}]({{#if hostedByDbl8}}Setup Your Event Viewer{{else}}Read the Self-Hosting Docs{{/if}})
+
+Cheers, <br />
+{{applicationName}} Team

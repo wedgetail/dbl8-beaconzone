@@ -6,6 +6,7 @@ import Readers from '../Readers/Readers';
 import Events from '../Events/Events';
 import Beacons from '../Beacons/Beacons';
 import BeaconTypes from '../BeaconTypes/BeaconTypes';
+import sendEmail from '../../modules/server/send-email';
 
 Meteor.methods({
   'customers.insert': function customersInsert(customerName) {
@@ -25,6 +26,36 @@ Meteor.methods({
       const customerId = customer._id;
       delete customer._id;
       return Customers.update({ _id: customerId }, { $set: customer });
+    } catch (exception) {
+      console.warn(exception);
+      throw new Meteor.Error('500', exception);
+    }
+  },
+  'customers.inviteAdmin': function customersInviteAdmin(customerId) {
+    check(customerId, String);
+
+    try {
+      const customer = Customers.findOne(customerId);
+
+      if (customer) {
+        const eventViewerDomain = Meteor.isDevelopment ? 'localhost:5000' : 'ev.dbl8.bz';
+        return sendEmail({
+          to: customer.email,
+          from: 'support@dbl8.com',
+          cc: 'ryan.glover@cleverbeagle.com',
+          subject: '[DBL8 BeaconZone - Event Viewer] Let\'s Setup Your Account',
+          template: 'invite-admin',
+          templateVars: {
+            customerEmail: customer.email,
+            applicationName: 'DBL8 BeaconZone – Event Viewer',
+            customerCode: customer.topicCode,
+            url: customer.hostedByDbl8 ? `${eventViewerDomain}/setup` : 'https://docs.dbl8.bz/setupEventViewer',
+            hostedByDbl8: customer.hostedByDbl8,
+          },
+        });
+      }
+
+      throw new Error(`Customer with the _id ${customerId} not found.`);
     } catch (exception) {
       console.warn(exception);
       throw new Meteor.Error('500', exception);
