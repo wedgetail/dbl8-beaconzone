@@ -70,7 +70,7 @@ Picker.route('/api/customers/setup', (params, request, response) => {
 
     if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ customerIsValid: true, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
+      response.end(JSON.stringify({ customerIsValid: true, customerId: customer._id, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
       response.writeHead(401); // 401 === HTTP unauthorized.
@@ -131,7 +131,7 @@ Picker.route('/api/customers/login', (params, request, response) => {
 
     if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ ok: true, userId: params.query.userId, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
+      response.end(JSON.stringify({ ok: true, userId: params.query.userId, customerId: customer._id, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       response.writeHead(403);
       response.end(JSON.stringify({ userId: params.query.userId, code: 403, message: 'Authentication error. Check with your administrator to make sure you have access.' }));
@@ -202,6 +202,7 @@ Picker.route('/api/customers/readers', (params, request, response) => {
 });
 
 Picker.route('/api/customers/beacons', (params, request, response) => {
+  console.log('Howdy', params);
   if (request.method === 'GET') {
     const customer = Customers.findOne({ 'users.userId': params.query.userId }, { fields: { _id: 1 } });
 
