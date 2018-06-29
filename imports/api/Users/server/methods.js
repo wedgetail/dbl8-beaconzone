@@ -39,6 +39,8 @@ Meteor.methods({
 
         1. Update user on customer (keeping track of admin status via isAdmin).
         2. Update user in localDB.
+        3. After invite is accepted, delete it.
+        4. Add warning when max users have been added/invited and remove invite UI.
       */
     } catch (exception) {
       throw new Meteor.Error('500', exception);
