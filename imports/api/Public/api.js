@@ -123,6 +123,53 @@ Picker.route('/api/customers/adduser', (params, request, response) => {
   }
 });
 
+Picker.route('/api/customers/updateuser', (params, request, response) => {
+  if (request.method === 'PUT') {
+    if (!request.body.customerId) handleError(response, 403, 'Please pass a customerId param with your request.');
+    if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
+    if (typeof request.body.isAdmin === 'undefined') handleError(response, 403, 'Please pass an isAdmin param with your request.');
+
+    console.log(request.body);
+
+    const customer = Customers.findOne({ _id: request.body.customerId });
+    console.log(customer);
+    const userToUpdate = customer.users.find(({ userId }) => userId === request.body.userId);
+    userToUpdate.isAdmin = request.body.isAdmin;
+
+    Customers.update({
+      _id: request.body.customerId,
+    }, {
+      $set: {
+        users: customer.users,
+      },
+    });
+
+    response.writeHead(200);
+    response.end('User successfully updated on customer.');
+  }
+});
+
+Picker.route('/api/customers/removeuser', (params, request, response) => {
+  if (request.method === 'DELETE') {
+    if (!request.body.customerId) handleError(response, 403, 'Please pass a customerId param with your request.');
+    if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
+
+    const customer = Customers.findOne({ _id: request.body.customerId });
+    customer.users = customer.users.filter(({ userId }) => userId !== request.body.userId);
+
+    Customers.update({
+      _id: request.body.customerId,
+    }, {
+      $set: {
+        users: customer.users,
+      },
+    });
+
+    response.writeHead(200);
+    response.end('User successfully deleted on customer.');
+  }
+});
+
 Picker.route('/api/customers/login', (params, request, response) => {
   if (request.method === 'GET') {
     if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
