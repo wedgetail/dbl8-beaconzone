@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Row, Col, ControlLabel, Table, Nav, NavItem, Button, FormGroup } from 'react-bootstrap';
+import { Row, Col, ControlLabel, Table, Nav, NavItem, Button, FormGroup, Alert } from 'react-bootstrap';
+import { Link } from 'react-router-dom';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Bert } from 'meteor/themeteorchef:bert';
@@ -100,7 +101,7 @@ class CustomerBeaconForm extends React.Component {
             />
           </div> : ''}
         </header>
-        <Table>
+        {beacons.length > 0 ? <Table>
           <thead>
             <tr>
               <th>Type</th>
@@ -119,7 +120,7 @@ class CustomerBeaconForm extends React.Component {
               </tr>
             ))}
           </tbody>
-        </Table>
+        </Table> : <Alert style={{ marginTop: '20px' }} bsStyle="warning">No beacons found. Make sure you've defined beacon types <Link to="/admin/beaconTypes">here</Link>.</Alert>}
       </div>
     );
   }
@@ -144,7 +145,7 @@ class CustomerBeaconForm extends React.Component {
           </Col>
         </Row>
       </form>
-      <Table>
+      {uuids.length > 0 ? <Table>
         <tbody>
           {uuids.map((uuid) => (
             <tr key={uuid}>
@@ -153,7 +154,7 @@ class CustomerBeaconForm extends React.Component {
             </tr>
           ))}
         </tbody>
-      </Table>
+      </Table> : <Alert style={{ marginTop: '20px' }} bsStyle="warning"><p>No UUIDs found. Add the customer's UUIDs above.</p><p>Once added, beacons assigned a UUID will be associated with the customer.</p></Alert>}
     </div>);
   }
 
@@ -162,6 +163,7 @@ class CustomerBeaconForm extends React.Component {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
+        console.log(data);
         this.setState({ data: data });
       }
     });

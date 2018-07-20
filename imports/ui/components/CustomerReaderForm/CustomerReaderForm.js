@@ -125,7 +125,7 @@ class CustomerReaderForm extends React.Component {
               <td><a href="#">{customJSON ? <Button bsStyle="info" onClick={() => this.setState({ showEditJSONModal: 'custom', jsonToEdit: customJSON, readerId: _id })}>Edit Custom JSON</Button> : <Button bsStyle="success" onClick={() => this.setState({ showEditJSONModal: 'custom', jsonToEdit: '', readerId: _id })}>Add Custom JSON</Button>}</a></td>
               <td>{serialNumber}</td>
               <td>{macAddress}</td>
-              <td>{monthDayYearAtTime(mostRecentEvent)}</td>
+              <td>{mostRecentEvent !== 'N/A' ? monthDayYearAtTime(mostRecentEvent) : 'No events yet'}</td>
             </tr>
           ))}
     		</tbody>

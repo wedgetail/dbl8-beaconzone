@@ -139,6 +139,9 @@ Meteor.methods({
         const readerEvents = Events.find({ 'message.rdr': searchRegex }, { fields: { 'message.rdr': 1, 'message.mac': 1, createdAt: 1 } }).fetch();
         const beaconsByMAC = Beacons.find({ customer: customer, macAddress: { $in: _.uniq(readerEvents.map(({ message }) => message.mac)) } }).fetch(); // Array of macAddresses ['123', '456']
 
+        console.log(readerEvents);
+        console.log(beaconsByMAC);
+
         return {
           customer: Customers.findOne({ _id: customer }),
           beacons: beaconsByMAC.map((beacon) => {
@@ -155,6 +158,7 @@ Meteor.methods({
         if (beaconType && beaconType !== 'all') beaconQuery.beaconType = beaconType; // { beaconType: beaconType };
         if (beaconSearch && beaconSearch.type === 'macAddress') beaconQuery.macAddress = new RegExp(beaconSearch.value, 'i'); // /aelkjre9r8era/i
 
+        console.log(beaconQuery);
         return {
           customer: Customers.findOne({ _id: customer }),
           beacons: Beacons.find(beaconQuery, { sort: { macAddress: 1 } }).fetch().map((beacon) => {

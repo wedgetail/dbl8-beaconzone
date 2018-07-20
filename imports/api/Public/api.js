@@ -260,7 +260,7 @@ Picker.route('/api/customers/beacons', (params, request, response) => {
           const lastEvent = Events.findOne({ 'message.mac': beacon.macAddress }, { limit: 1, sort: { createdAt: -1 } });
           return {
             ...beacon,
-            beaconType: beaconType.title,
+            beaconType: beaconType ? beaconType.title : 'N/A',
             currentReader: lastEvent.message.rdr, // The serial number of the reader that last saw this beacon.
             lastSeen: lastEvent.createdAt,
           };
