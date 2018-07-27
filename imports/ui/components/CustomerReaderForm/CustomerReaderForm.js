@@ -43,6 +43,7 @@ class CustomerReaderForm extends React.Component {
               } else {
                 Bert.alert(`${readersAdded} readers uploaded!`, 'success');
                 component.setState({ uploading: false });
+                component.fetchReaderData();
               }
             });
           }
