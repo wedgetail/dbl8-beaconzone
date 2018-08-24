@@ -69,12 +69,13 @@ class CustomerBeaconForm extends React.Component {
               if (this.beaconSearch) {
                 this.beaconSearch.value = '';
                 this.beaconSearch.focus();
+                currentBeaconSearch.set(null);
               }
             });
           }}>
             <option value="beaconType">Beacon Type</option>
             <option value="macAddress">MAC Address</option>
-            <option value="serialNumber">Serial Number</option>
+            <option value="serialNumber">Reader Serial Number</option>
           </select>
           {searchType === 'beaconType' ? <div>
             <select name="beaconType" className="form-control" onChange={(event) => { currentBeaconType.set(event.target.value); this.fetchBeaconData(); }}>
