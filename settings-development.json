@@ -7,6 +7,9 @@
     "productAddress": ""
   },
   "private": {
+    "view": {
+      "domain": "http://localhost:5000"
+    },
     "MAIL_URL": "smtp://marvin%40dbl8.com:BeaconZ0ne4073@smtp.office365.com:587",
     "OAuth": {
       "facebook": {

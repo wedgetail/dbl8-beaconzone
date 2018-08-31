@@ -38,7 +38,6 @@ Meteor.methods({
       const customer = Customers.findOne(customerId);
 
       if (customer) {
-        const eventViewerDomain = Meteor.isDevelopment ? 'localhost:5000' : 'ev.dbl8.bz';
         return sendEmail({
           to: customer.email,
           from: 'support@dbl8.com',
@@ -49,7 +48,7 @@ Meteor.methods({
             customerEmail: customer.email,
             applicationName: 'DBL8 BeaconZone – Event Viewer',
             customerCode: customer.topicCode,
-            url: customer.hostedByDbl8 ? `${eventViewerDomain}/setup` : 'https://docs.dbl8.bz/setupEventViewer',
+            url: customer.hostedByDbl8 ? `${Meteor.settings.private.view.domain}/setup` : 'https://docs.dbl8.bz/setupEventViewer',
             hostedByDbl8: customer.hostedByDbl8,
           },
         });
