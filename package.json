@@ -2,7 +2,7 @@
   "name": "pup",
   "private": true,
   "scripts": {
-    "start": "meteor --settings settings-development.json",
+    "start": "meteor --settings settings-development.json --port 3000",
     "production": "DEPLOY_HOSTNAME=us-east-1.galaxy-deploy.meteor.com meteor deploy admin.dbl8.bz --settings settings-production.json",
     "test": "jest"
   },

@@ -45,6 +45,10 @@ BeaconTypes.schema = new SimpleSchema({
     type: String,
     label: 'The description of the beacon type.',
   },
+  parseMap: {
+    type: String,
+    label: 'Parse map for major and minor values in b1.',
+  },
 });
 
 BeaconTypes.attachSchema(BeaconTypes.schema);

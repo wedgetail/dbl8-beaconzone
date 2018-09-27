@@ -103,6 +103,16 @@ class BeaconTypeEditor extends React.Component {
             placeholder="Basic beacon to measure proximity."
           />
         </FormGroup>
+        <FormGroup>
+          <ControlLabel>Parse Map</ControlLabel>
+          <textarea
+            className="form-control"
+            name="parseMap"
+            ref={description => (this.parseMap = parseMap)}
+            defaultValue={beaconType && beaconType.parseMap}
+            placeholder={`{ "major": { "thisMajor": { start: 36, end: 40 }, "thisOtherMajorField": { start: 0, end: 0 }, }, "minor": { "thisMinor": { start: 40, end: 44 }, "temperature": { start: , end, parseInt: 16, modifier: convertCtoF } } }`}
+          />
+        </FormGroup>
         <Button type="submit" bsStyle="success">
           {beaconType && beaconType._id ? 'Save Changes' : 'Add Beacon Type'}
         </Button>
