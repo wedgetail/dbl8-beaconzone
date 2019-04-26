@@ -20,11 +20,6 @@ const EventsSchema = new SimpleSchema({
     type: String,
     label: 'Date this event was created.',
   },
-  owner: {
-    type: String,
-    label: 'The ID of the owner of this event.',
-    optional: true,
-  },
   topic: {
     type: String,
     label: 'The MQTT Topic that this event was received from.',

@@ -56,7 +56,7 @@ class BeaconTypeEditor extends React.Component {
         const confirmation = existingBeaconType ? 'Beacon type updated!' : 'Beacon type added!';
         this.form.reset();
         Bert.alert(confirmation, 'success');
-        history.push(`/admin/beaconTypes/${beaconTypeId}`);
+        history.push(`/admin/beaconTypes`);
       }
     });
   }
@@ -108,7 +108,7 @@ class BeaconTypeEditor extends React.Component {
           <textarea
             className="form-control"
             name="parseMap"
-            ref={description => (this.parseMap = parseMap)}
+            ref={parseMap => (this.parseMap = parseMap)}
             defaultValue={beaconType && beaconType.parseMap}
             placeholder={`{ "major": { "thisMajor": { start: 36, end: 40 }, "thisOtherMajorField": { start: 0, end: 0 }, }, "minor": { "thisMinor": { start: 40, end: 44 }, "temperature": { start: , end, parseInt: 16, modifier: convertCtoF } } }`}
           />

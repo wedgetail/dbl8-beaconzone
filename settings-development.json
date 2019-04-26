@@ -7,8 +7,12 @@
     "productAddress": ""
   },
   "private": {
+    "eventViewerData": {
+      "MONGO_URL": "mongodb://@localhost:12345/development"
+    },
     "view": {
-      "domain": "http://localhost:4000"
+      "domain": "http://localhost:4000",
+      "apiKey": "e1af74934b23d6c9d4e7e708a67fd8e052c207b1"
     },
     "MAIL_URL": "smtp://marvin%40dbl8.com:BeaconZ0ne4073@smtp.office365.com:587",
     "OAuth": {

@@ -5,6 +5,25 @@ import Customers from '../Customers/Customers';
 import Readers from '../Readers/Readers';
 import Beacons from '../Beacons/Beacons';
 import BeaconTypes from '../BeaconTypes/BeaconTypes';
+import readerJSONTemplate from '../../modules/server/readerJSONTemplate';
+
+const eventViewerDataConnectionString = Meteor.settings.private.eventViewerData.MONGO_URL;
+
+const getCustomerBeacons = (customer) => {
+  return Beacons.find({ customer: customer }, { fields: { whitelisted: 0 } }).fetch()
+    .map((beacon) => {
+      console.log('beacon', beacon);
+      const beaconType = BeaconTypes.findOne({ beaconTypeCode: beacon.beaconType }, { fields: { title: 1 } });
+      const lastEvent = Events.findOne({ 'message.mac': beacon.macAddress }, { limit: 1, sort: { createdAt: -1 } });
+      console.log(lastEvent);
+      return {
+        ...beacon,
+        beaconType: beaconType ? beaconType.title : 'N/A',
+        currentReader: lastEvent && lastEvent.message && lastEvent.message.rdr || null, // The serial number of the reader that last saw this beacon.
+        lastSeen: lastEvent && lastEvent.createdAt || null,
+      };
+    });
+}
 
 Picker.middleware(bodyParser.json());
 
@@ -13,8 +32,50 @@ const handleError = (response, code, message) => {
   response.end(message);
 };
 
+const checkApiKey = (apiKey, response) => {
+  if (!apiKey) {
+    handleError(response, 403, 'Please pass an apiKey param with your request.');
+    return;
+  }
+
+  const isCustomerKey = Customers.findOne({ apiKey }, { fields: { apiKey: 1 } });
+  const isDbl8Key = Meteor.settings.private.view.apiKey === apiKey;
+  return isCustomerKey || isDbl8Key ? true : handleError(response, '403', 'Must pass a valid API key with your request.');
+};
+
+Picker.route('/api/v1/devices/:macAddress/config', (params, request, response) => {
+  console.log(params);
+  const reader = Readers.findOne({ macAddress: params.macAddress });
+  console.log(reader);
+  const customer = reader ? Customers.findOne({ _id: reader.customer }) : null;
+  console.log(customer);
+
+  if (!reader || !customer) {
+    response.writeHead(404);
+    response.end('Reader or customer could not be found.');
+    return false;
+  } else {
+    response.writeHead(200);
+    response.end(
+      JSON.stringify(
+        readerJSONTemplate({
+          wifi_configs: Object.keys(customer.ssIds).map((ssIdName) => {
+            const ssid = customer.ssIds[ssIdName];
+            return {
+              ssid: ssid.ssid,
+              passkey: ssid.securityKey,
+            };
+          }),
+          min_distance: customer.minReaderDistance,
+          beacon_type: customer.beaconPacketType, // All, iBeacon, Eddyston UID, Eddystone URL,
+        }),
+      )
+    );
+  }
+});
+
 Picker.route('/api/events', (params, request, response) => {
-  if (!params.query.apiKey) handleError(response, 403, 'Please pass an apiKey param with your request.');
+  checkApiKey(params.query.apiKey, response);
   if (!params.query.reader) handleError(response, 403, 'Please pass a reader param with your request.');
   if (!params.query.maxEvents) handleError(response, 403, 'Please pass a maxEvents param as a number with your request.');
 
@@ -26,7 +87,7 @@ Picker.route('/api/events', (params, request, response) => {
 });
 
 Picker.route('/api/events1', (params, request, response) => {
-  if (!params.query.apiKey) handleError(response, 403, 'Please pass an apiKey param with your request.');
+  checkApiKey(params.query.apiKey, response);
   if (!params.query.reader) handleError(response, 403, 'Please pass a reader param with your request.');
   if (!params.query.maxEvents) handleError(response, 403, 'Please pass a maxEvents param as a number with your request.');
 
@@ -37,21 +98,8 @@ Picker.route('/api/events1', (params, request, response) => {
   response.end(JSON.stringify(events));
 });
 
-Picker.route('/api/readers/config', (params, request, response) => {
-  // TODO: Wire this up to the actual params/data from readers.
-  // if (!params.query.apiKey) handleError(response, 403, 'Please pass an apiKey param with your request.');
-  // if (!params.query.reader) handleError(response, 403, 'Please pass a reader param with your request.');
-  // if (!params.query.maxEvents) handleError(response, 403, 'Please pass a maxEvents param as a number with your request.');
-
-  // const maxEvents = parseInt(params.query.maxEvents, 10);
-
-  // const events = Events.find({ 'message.rdr': params.query.reader }, { fields: { _id: 0 }, limit: maxEvents <= 999 ? maxEvents : 999 }).fetch();
-  // response.writeHead(200);
-  // response.end(JSON.stringify(events));
-});
-
 Picker.route('/api/customers/setup', (params, request, response) => {
-
+  checkApiKey(params.query.apiKey, response);
   /*
     TODO:
 
@@ -63,14 +111,23 @@ Picker.route('/api/customers/setup', (params, request, response) => {
     if (!params.query.customerCode) handleError(response, 403, 'Please pass a customerCode param with your request.');
     if (!params.query.emailAddress) handleError(response, 403, 'Please pass an emailAddress param with your request.');
 
+    console.log('customer setup credentials', {
+      topicCode: params.query.customerCode,
+      email: params.query.emailAddress,
+    });
+    //customer setup credentials { topicCode: '61222ad79a', email: 'webbstuff@gmail.com' }
+
+
     const customer = Customers.findOne({
       topicCode: params.query.customerCode,
       email: params.query.emailAddress,
     });
 
+    //console.log('customer', customer);
+
     if (customer) {
       response.writeHead(200);
-      response.end(JSON.stringify({ customerIsValid: true, customerId: customer._id, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
+      response.end(JSON.stringify({ customerIsValid: true, customerId: customer._id, customerName: customer.name, databaseConnectionString: customer.hostedByDlb8 ? dbl8DatabaseConnectionString : customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
       response.writeHead(401); // 401 === HTTP unauthorized.
@@ -81,7 +138,9 @@ Picker.route('/api/customers/setup', (params, request, response) => {
   if (request.method === 'POST') {
     if (!request.body.customerCode) handleError(response, 403, 'Please pass a customerCode param with your request.');
     if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
-    
+
+    console.log('request.body', request.body);
+
     Customers.update({
       topicCode: request.body.customerCode,
     }, {
@@ -104,8 +163,9 @@ Picker.route('/api/customers/setup', (params, request, response) => {
 });
 
 Picker.route('/api/customers/adduser', (params, request, response) => {
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'POST') {
-    console.log(request.body);
     if (!request.body.customerId) handleError(response, 403, 'Please pass a customerId param with your request.');
     if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
     if (typeof request.body.isAdmin === 'undefined') handleError(response, 403, 'Please pass an isAdmin param with your request.');
@@ -124,15 +184,14 @@ Picker.route('/api/customers/adduser', (params, request, response) => {
 });
 
 Picker.route('/api/customers/updateuser', (params, request, response) => {
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'PUT') {
     if (!request.body.customerId) handleError(response, 403, 'Please pass a customerId param with your request.');
     if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
     if (typeof request.body.isAdmin === 'undefined') handleError(response, 403, 'Please pass an isAdmin param with your request.');
 
-    console.log(request.body);
-
     const customer = Customers.findOne({ _id: request.body.customerId });
-    console.log(customer);
     const userToUpdate = customer.users.find(({ userId }) => userId === request.body.userId);
     userToUpdate.isAdmin = request.body.isAdmin;
 
@@ -150,6 +209,8 @@ Picker.route('/api/customers/updateuser', (params, request, response) => {
 });
 
 Picker.route('/api/customers/removeuser', (params, request, response) => {
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'DELETE') {
     if (!request.body.customerId) handleError(response, 403, 'Please pass a customerId param with your request.');
     if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request.');
@@ -171,14 +232,18 @@ Picker.route('/api/customers/removeuser', (params, request, response) => {
 });
 
 Picker.route('/api/customers/login', (params, request, response) => {
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'GET') {
     if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
 
     const customer = Customers.findOne({ 'users.userId': params.query.userId });
 
     if (customer) {
+      const readers = Readers.find({ customer: customer._id }).fetch();
+      const beacons = getCustomerBeacons(customer._id);
       response.writeHead(200);
-      response.end(JSON.stringify({ ok: true, userId: params.query.userId, customerId: customer._id, customerName: customer.name, databaseConnectionString: customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
+      response.end(JSON.stringify({ ok: true, userId: params.query.userId, customerId: customer._id, customerName: customer.name, readers: readers, beacons: beacons, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       response.writeHead(403);
       response.end(JSON.stringify({ userId: params.query.userId, code: 403, message: 'Authentication error. Check with your administrator to make sure you have access.' }));
@@ -187,6 +252,8 @@ Picker.route('/api/customers/login', (params, request, response) => {
 });
 
 Picker.route('/api/customers/customerId', (params, request, response) => {
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'GET') {
     if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
 
@@ -203,6 +270,8 @@ Picker.route('/api/customers/customerId', (params, request, response) => {
 });
 
 Picker.route('/api/customers/maxusers', (params, request, response) => {
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'GET') {
     if (!params.query.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
 
@@ -219,6 +288,8 @@ Picker.route('/api/customers/maxusers', (params, request, response) => {
 });
 
 Picker.route('/api/customers/readers', (params, request, response) => {
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'GET') {
     const customer = Customers.findOne({ 'users.userId': params.query.userId }, { fields: { _id: 1 } });
 
@@ -249,22 +320,13 @@ Picker.route('/api/customers/readers', (params, request, response) => {
 });
 
 Picker.route('/api/customers/beacons', (params, request, response) => {
-  console.log('Howdy', params);
+  checkApiKey(params.query.apiKey, response);
+
   if (request.method === 'GET') {
     const customer = Customers.findOne({ 'users.userId': params.query.userId }, { fields: { _id: 1 } });
 
     if (customer) {
-      const beacons = Beacons.find({ customer: customer._id }, { fields: { whitelisted: 0 } }).fetch()
-        .map((beacon) => {
-          const beaconType = BeaconTypes.findOne({ beaconTypeCode: beacon.beaconType }, { fields: { title: 1 } });
-          const lastEvent = Events.findOne({ 'message.mac': beacon.macAddress }, { limit: 1, sort: { createdAt: -1 } });
-          return {
-            ...beacon,
-            beaconType: beaconType ? beaconType.title : 'N/A',
-            currentReader: lastEvent.message.rdr, // The serial number of the reader that last saw this beacon.
-            lastSeen: lastEvent.createdAt,
-          };
-        });
+      const beacons = getCustomerBeacons(customer._id);
 
       response.writeHead(200);
       response.end(JSON.stringify({ beacons: beacons }));

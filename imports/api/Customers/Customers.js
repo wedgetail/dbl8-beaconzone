@@ -17,16 +17,6 @@ Customers.deny({
 });
 
 const CustomersSchema = new SimpleSchema({
-  hostedByDbl8: {
-    type: Boolean,
-    label: 'Is this customer relying on DBL8 for hosting their event viewer?',
-    defaultValue: true,
-  },
-  databaseConnectionString: {
-    type: String,
-    label: 'The database connection string for the customer\'s database.',
-    optional: true,
-  },
   eventViewerDashboardTimeout: {
     type: Number,
     label: 'The timeout for the customer\'s event viewer dashboard (in seconds).',
@@ -64,6 +54,13 @@ const CustomersSchema = new SimpleSchema({
     label: 'MQTT topic code for the customer.',
     autoValue() {
       if (this.isInsert) return Random.hexString(10);
+    },
+  },
+  apiKey: {
+    type: String,
+    label: 'API key for the customer.',
+    autoValue() {
+      if (this.isInsert) return Random.hexString(20);
     },
   },
   contact: {

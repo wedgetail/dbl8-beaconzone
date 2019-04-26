@@ -53,9 +53,9 @@ const BeaconTypes = ({
                 <Button
                   bsStyle="primary"
                   bsSize="small"
-                  onClick={() => history.push(`${match.url}/${_id}`)}
+                  onClick={() => history.push(`${match.url}/${_id}/edit`)}
                 >
-                  View
+                  Edit
                 </Button>
                 <Button
                   bsStyle="danger"

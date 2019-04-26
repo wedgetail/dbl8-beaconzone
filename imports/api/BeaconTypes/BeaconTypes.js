@@ -48,6 +48,7 @@ BeaconTypes.schema = new SimpleSchema({
   parseMap: {
     type: String,
     label: 'Parse map for major and minor values in b1.',
+    optional: true,
   },
 });
 

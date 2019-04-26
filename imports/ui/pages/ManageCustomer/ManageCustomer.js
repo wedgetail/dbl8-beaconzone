@@ -46,18 +46,6 @@ class ManageCustomer extends React.Component {
 
 		  <Tab eventKey="beacons" title="Beacons">
 		  	<CustomerBeaconForm customerId={customer && customer._id} />
-          <h4 className="page-header">Beacons - Search</h4> 
-          <p>Type of Search - Dropdown (either: Beacon Type, Beacon MAC Address, Reader Serial Number</p> 
-          <p>-------------------------------------------</p> 
-          <p>Search - Beacon Type - Dropdown elements are sourced by querying Beacon Types in Customer Beacons Collection</p> 
-          <p>____________________ - List beacons of the Beacon Type selected in MAC Address order</p> 
-          <p>Search - Beacon MAC Address - list beacons where Search String is contained in the Beacon MAC Addresses</p> 
-          <p>Search - Reader Serial Number - list beacons where Search String is contained in the Reader Serial Numbers</p> 
-          <p>-------------------------------------------</p> 
-          <h4 className="page-header">Beacons - Search</h4> 
-          <p>Type of Search - Dropdown (either: Beacon Type, Beacon MAC Address, Reader Serial Number</p> 
-          <p>-------------------------------------------</p> 
-          <p>Search - Beacon Type - Dropdown elements are sourced by querying</p>
 		  </Tab>
 
 

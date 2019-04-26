@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { FormGroup, ControlLabel, Row, Col, Button } from 'react-bootstrap';
+import { FormGroup, ControlLabel, Row, Col, Button, InputGroup } from 'react-bootstrap';
 import StateSelector from '../StateSelector/StateSelector';
 import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import validate from '../../../modules/validate';
@@ -8,26 +8,21 @@ import validate from '../../../modules/validate';
 class CustomerForm extends React.Component {
   constructor(props) {
     super(props);
-    // this.state = {};
+    this.state = {};
     this.handleSubmit = this.handleSubmit.bind(this);
     this.handleSendAdminInvite = this.handleSendAdminInvite.bind(this);
+    this.generateApiKey = this.generateApiKey.bind(this);
   }
 
   componentDidMount() {
   	const component = this;
 		validate(this.editCustomerForm, {
 			rules: {
-				databaseConnectionString: {
-					required: true,
-				},
 				eventViewerDashboardTimeout: {
 					required: true,
 				},
 			},
 			messages: {
-				databaseConnectionString: {
-					required: 'A database connection string is required.',
-				},
 				eventViewerDashboardTimeout: {
 					required: 'An event viewer dashboard timeout is required.',
 				},
@@ -48,10 +43,8 @@ class CustomerForm extends React.Component {
 		  mobile: this.customerMobile.value,
 		  telephone: this.customerTelephone.value,
 			email: this.customerEmail.value,
-			databaseConnectionString: this.databaseConnectionString.value,
 			eventViewerDashboardTimeout: parseInt(this.eventViewerDashboardTimeout.value, 10),
       numberOfEventViewerUsers: parseInt(this.numberOfEventViewerUsers.value, 10),
-      hostedByDbl8: this.hostedByDbl8.state.toggled,
   	};
 
   	Meteor.call('customers.update', customer, (error, response) => {
@@ -66,6 +59,9 @@ class CustomerForm extends React.Component {
 	handleSendAdminInvite() {
     const { customer } = this.props;
 
+    // Make sure we save the data before sending email in case the email changed.
+    this.handleSubmit();
+
 		if (customer.email) {
 			Meteor.call('customers.inviteAdmin', customer._id, (error) => {
 				if (error) {
@@ -78,6 +74,20 @@ class CustomerForm extends React.Component {
 			Bert.alert('Please add an email address to the customer first.', 'danger');
 		}
 	}
+
+  generateApiKey() {
+    if (confirm('Are you sure? This will immediately disable the current key.')) {
+      const { customer } = this.props;
+      Meteor.call('customers.generateApiKey', customer._id, (error) => {
+        if (error) {
+          console.warn(error);
+          Bert.alert(error.reason, 'danger');
+        } else {
+          Bert.alert('API key generated!', 'success');
+        }
+      });
+    }
+  }
 
   render() {
   	const { customer } = this.props;
@@ -109,12 +119,24 @@ class CustomerForm extends React.Component {
 						  />
 						</FormGroup>
 			  	</Col>
-			  	<Col xs={12} sm={4}>
-			  	  <FormGroup>
-						  <ControlLabel>Event Viewer Hosted by DBL8?</ControlLabel>
-						  <ToggleSwitch style={{ marginTop: '6px' }} ref={hostedByDbl8 => (this.hostedByDbl8 = hostedByDbl8)} toggled={customer.hostedByDbl8} />
-						</FormGroup>
-			  	</Col>
+          <Col xs={12} sm={4}>
+            <FormGroup>
+              <ControlLabel>API Key</ControlLabel>
+              <InputGroup>
+                <input
+                  disabled
+                  readOnly
+                  className="form-control"
+                  name="apiKey"
+                  value={customer.apiKey || 'Not Set'}
+                  ref={apiKey => (this.apiKey = apiKey)}
+                />
+                <InputGroup.Button>
+                  <Button onClick={this.generateApiKey} bsStyle="default">Generate</Button>
+                </InputGroup.Button>
+              </InputGroup>
+            </FormGroup>
+          </Col>
 			  </Row>
 			  <FormGroup>
 				  <ControlLabel>Contact</ControlLabel>
@@ -208,17 +230,6 @@ class CustomerForm extends React.Component {
 					  </Col> : ''}
 				  </Row>
 			  </FormGroup>
-				<FormGroup>
-					<ControlLabel>Database Connection String</ControlLabel>
-					<input
-						type="text"
-						name="databaseConnectionString"
-						defaultValue={customer.databaseConnectionString}
-						ref={databaseConnectionString => (this.databaseConnectionString = databaseConnectionString)}
-						className="form-control"
-						placeholder="mongodb://somedomain.com:27017/database"
-					/>
-				</FormGroup>
 				<Row>
 					<Col xs={6}>
 						<FormGroup>

@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { Row, Col, ControlLabel, Table, Nav, NavItem, Button, FormGroup, Alert } from 'react-bootstrap';
 import { Link } from 'react-router-dom';
+import moment from 'moment';
 import { Meteor } from 'meteor/meteor';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Bert } from 'meteor/themeteorchef:bert';
@@ -116,7 +117,8 @@ class CustomerBeaconForm extends React.Component {
               <tr key={_id}>
                 <td>{beaconType}</td>
                 <td>{macAddress}</td>
-                <td>{mostRecentEvent && mostRecentEvent.createdAt}</td>
+                <td>{mostRecentEvent && mostRecentEvent.createdAt && moment.unix(mostRecentEvent.createdAt / 1000).format('MMMM Do, YYYY [at] hh:mm a')}</td>
+                {/* <td>{mostRecentEvent && mostRecentEvent.createdAt && moment.unix(mostRecentEvent.createdAt / 1000).format('MM/DD/YYYY [at] hh:mm a')}</td> */}
                 <td>{mostRecentEvent && mostRecentEvent.message.rdr}</td>
               </tr>
             ))}
@@ -164,7 +166,6 @@ class CustomerBeaconForm extends React.Component {
       if (error) {
         Bert.alert(error.reason, 'danger');
       } else {
-        console.log(data);
         this.setState({ data: data });
       }
     });

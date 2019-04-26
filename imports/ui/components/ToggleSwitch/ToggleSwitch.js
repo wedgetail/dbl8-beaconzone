@@ -20,7 +20,7 @@ class ToggleSwitch extends React.Component {
     const toggled = !this.state.toggled;
     this.setState({ toggled });
     this.refs.checkbox.checked = toggled;
-    this.props.onToggle(this.props.id, toggled);
+    if (this.props.onToggle) this.props.onToggle(this.props.id, toggled);
   }
 
   render() {
