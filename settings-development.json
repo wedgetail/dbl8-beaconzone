@@ -32,6 +32,11 @@
         "loginStyle": "popup"
       }
     },
-    "supportEmail": "DBL8 BeaconZone <marvin@dbl8.com>"
+    "supportEmail": "DBL8 BeaconZone <marvin@dbl8.com>",
+    "slack": {
+      "hooks": {
+        "beaconzoneadminlogs": "https://hooks.slack.com/services/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"
+      }
+    }
   }
 }

@@ -51,7 +51,7 @@ class Index extends React.Component {
           <Col xs={12} sm={4}>
             <div className="DashboardWidget">
               <header>
-                <p>Active Readers</p>
+                <p>Readers Reporting Beacon Data</p>
               </header>
               <div>
                 <h1>{this.state.activeReaders || 0}</h1>
@@ -67,7 +67,7 @@ class Index extends React.Component {
             </div>
             <div className="DashboardWidget">
               <header>
-                <p>Readers Not Reporting</p>
+                <p>Readers Not Reporting Beacons</p>
               </header>
               <div>
                 <h1>{this.state.readersNotReporting || 0}</h1>

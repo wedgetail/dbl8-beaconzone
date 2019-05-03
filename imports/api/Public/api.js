@@ -6,6 +6,7 @@ import Readers from '../Readers/Readers';
 import Beacons from '../Beacons/Beacons';
 import BeaconTypes from '../BeaconTypes/BeaconTypes';
 import readerJSONTemplate from '../../modules/server/readerJSONTemplate';
+import Gromit from '../../startup/server/gromit';
 
 const eventViewerDataConnectionString = Meteor.settings.private.eventViewerData.MONGO_URL;
 
@@ -51,10 +52,27 @@ Picker.route('/api/v1/devices/:macAddress/config', (params, request, response) =
   console.log(customer);
 
   if (!reader || !customer) {
+    Gromit.error({
+      title: '[Reader Config API]',
+      message: 'New config request failed',
+      payload: [
+        { title: 'Mac Address', value: params.macAddress },
+        { title: 'Customer', value: customer && customer.name },
+      ],
+    });
     response.writeHead(404);
     response.end('Reader or customer could not be found.');
     return false;
   } else {
+    Gromit.success({
+      title: '[Reader Config API]',
+      message: 'New config request',
+      payload: [
+        { title: 'Mac Address', value: params.macAddress },
+        { title: 'Customer', value: customer && customer.name },
+      ],
+    });
+
     response.writeHead(200);
     response.end(
       JSON.stringify(
@@ -130,6 +148,15 @@ Picker.route('/api/customers/setup', (params, request, response) => {
       response.end(JSON.stringify({ customerIsValid: true, customerId: customer._id, customerName: customer.name, databaseConnectionString: customer.hostedByDlb8 ? dbl8DatabaseConnectionString : customer.databaseConnectionString, eventViewerDashboardTimeout: customer.eventViewerDashboardTimeout || 60 }));
     } else {
       // https://en.wikipedia.org/wiki/List_of_HTTP_status_codes
+      Gromit.error({
+        title: '[/api/customers/setup]',
+        message: 'MAJOR - New customer setup failed',
+        payload: [
+          { title: 'Error', value: 'Sorry, we couldn\'t find a customer with that code and email address.' },
+          { title: 'Customer Code', value: params.query.customerCode },
+          { title: 'Email address', value: params.query.emailAddress },
+        ],
+      });
       response.writeHead(401); // 401 === HTTP unauthorized.
       response.end('Sorry, we couldn\'t find a customer with that code and email address.');
     }
