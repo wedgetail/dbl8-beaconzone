@@ -148,7 +148,7 @@ class CustomerBeaconForm extends React.Component {
           </Col>
         </Row>
       </form>
-      {uuids.length > 0 ? <Table>
+      {uuids && uuids.length > 0 ? <Table>
         <tbody>
           {uuids.map((uuid) => (
             <tr key={uuid}>

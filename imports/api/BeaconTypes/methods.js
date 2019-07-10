@@ -9,6 +9,7 @@ Meteor.methods({
       title: String,
       description: String,
       beaconTypeCode: String,
+      parseMapFields: [Object],
     });
 
     try {
@@ -23,6 +24,7 @@ Meteor.methods({
       title: String,
       description: String,
       beaconTypeCode: String,
+      parseMapFields: [Object],
     });
 
     try {

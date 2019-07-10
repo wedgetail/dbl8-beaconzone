@@ -54,9 +54,11 @@ class Index extends React.Component {
                 <p>Readers Reporting Beacon Data</p>
               </header>
               <div>
-                <h1>{this.state.activeReaders || 0}</h1>
+                <h1>{this.state.readersReporting || 0}</h1>
               </div>
             </div>
+          </Col>
+          <Col xs={12} sm={4}>
             <div className="DashboardWidget">
               <header>
                 <p>Active Beacons</p>
@@ -65,6 +67,8 @@ class Index extends React.Component {
                 <h1>{this.state.activeBeacons || 0}</h1>
               </div>
             </div>
+          </Col>
+          <Col xs={12} sm={4}>
             <div className="DashboardWidget">
               <header>
                 <p>Readers Not Reporting Beacons</p>
@@ -74,32 +78,7 @@ class Index extends React.Component {
               </div>
             </div>
           </Col>
-          <Col xs={12} sm={8}>
-            <div className="DashboardWidget">
-              <header>
-                <p>Traffic Per Hour</p>
-              </header>
-              <div>
-                <ResponsiveContainer width="100%" height={360}>
-                  <LineChart
-                    data={this.state.trafficPerHour || []}
-                    margin={{ top: 5, right: 10, left: 0, bottom: 5 }}
-                  >
-                    <XAxis dataKey="name" />
-                    <YAxis />
-                    <Tooltip />
-                    <CartesianGrid strokeDasharray="3 3" />
-                    <Line type="monotone" dataKey="readers" stroke="#00D490" activeDot={{ r: 5 }} />
-                    <Line type="monotone" dataKey="events" stroke="#aaaaaa" activeDot={{ r: 5 }} />
-                  </LineChart>
-                </ResponsiveContainer>
-              </div>
-            </div>
-          </Col>
         </Row>
-        <footer>
-          <p>...</p>
-        </footer>
       </div>
     );
   }

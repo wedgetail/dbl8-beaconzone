@@ -1,0 +1,18 @@
+@import "../../stylesheets/colors.scss";
+
+.parse-map-fields {
+  border: 1px solid #eee;
+  padding: 20px;
+  border-radius: 3px;
+
+  .fa-remove {
+    margin-top: 27px;
+    font-size: 24px;
+  }
+
+  .add-another-field {
+    display: inline-block;
+    color: $primary;
+    margin-top: 15px;
+  }
+}

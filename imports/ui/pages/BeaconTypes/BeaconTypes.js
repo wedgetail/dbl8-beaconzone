@@ -83,6 +83,6 @@ export default withTracker(() => {
   const subscription = Meteor.subscribe('beaconTypes');
   return {
     loading: !subscription.ready(),
-    beaconTypes: BeaconTypesCollection.find().fetch(),
+    beaconTypes: BeaconTypesCollection.find({}, { sort: { title: 1 } }).fetch(),
   };
 })(BeaconTypes);
