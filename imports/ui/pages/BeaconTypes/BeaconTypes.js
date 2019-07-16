@@ -36,6 +36,7 @@ const BeaconTypes = ({
         <thead>
           <tr>
             <th>Title</th>
+            <th>Code</th>
             <th>Last Updated</th>
             <th>Created</th>
             <th />
@@ -43,10 +44,11 @@ const BeaconTypes = ({
         </thead>
         <tbody>
           {beaconTypes.map(({
-            _id, title, createdAt, updatedAt,
+            _id, title, beaconTypeCode, createdAt, updatedAt,
           }) => (
             <tr key={_id}>
               <td>{title}</td>
+              <td>{beaconTypeCode}</td>
               <td>{timeago(updatedAt)}</td>
               <td>{monthDayYearAtTime(createdAt)}</td>
               <td className="text-right">

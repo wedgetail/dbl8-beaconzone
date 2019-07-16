@@ -70,13 +70,7 @@ class BeaconTypeEditor extends React.Component {
       title: this.title.value.trim(),
       description: this.description.value.trim(),
       beaconTypeCode: this.beaconTypeCode.value.trim(),
-      parseMapFields: this.state.parseMapFields.filter((parseMapField) => this.isValidParseMapField(parseMapField)).map((parseMapField) => {
-        // NOTE: Convert parseInt to a boolean (select returns 'true' as a string).
-        return {
-          ...parseMapField,
-          parseInt: parseMapField.parseInt === 'true',
-        }
-      }),
+      parseMapFields: this.state.parseMapFields.filter((parseMapField) => this.isValidParseMapField(parseMapField)),
     };
 
     if (existingBeaconType) beaconType._id = existingBeaconType;
@@ -222,8 +216,8 @@ class BeaconTypeEditor extends React.Component {
                   <Col xs={12} sm={1}>
                     <ControlLabel>Parse Int</ControlLabel>
                     <select className="form-control" name="parseInt" value={parseInt} onChange={(event) => this.handleSetParseMapField(_id, 'parseInt', event.target.value)}>
-                      <option value="true">Yes</option>
-                      <option value="false">No</option>
+                      <option value="yes">Yes</option>
+                      <option value="no">No</option>
                     </select>
                   </Col>
                   <Col xs={12} sm={1}>
@@ -248,6 +242,7 @@ class BeaconTypeEditor extends React.Component {
                     <select className="form-control" name="modifier" value={modifier} onChange={(event) => this.handleSetParseMapField(_id, 'modifier', event.target.value)}>
                       <option value="none">None</option>
                       <option value="centigradeToFarenheit">Cº to Fº</option>
+                      <option value="farenheitToCentigrade">Fº to Cº</option>
                     </select>
                   </Col>
                   {this.state.parseMapFields.length > 1 && (
