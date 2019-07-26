@@ -22,6 +22,7 @@ const getCustomerBeacons = (customer) => {
         beaconType: beaconType ? beaconType.title : 'N/A',
         currentReader: lastEvent && lastEvent.message && lastEvent.message.rdr || null, // The serial number of the reader that last saw this beacon.
         lastSeen: lastEvent && lastEvent.createdAt || null,
+        packetValues: lastEvent && lastEvent.message,
       };
     });
 }

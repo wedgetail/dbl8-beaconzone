@@ -36,7 +36,7 @@ const BeaconTypes = ({
         <thead>
           <tr>
             <th>Title</th>
-            <th>Code</th>
+            <th>Major</th>
             <th>Last Updated</th>
             <th>Created</th>
             <th />
