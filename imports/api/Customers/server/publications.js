@@ -17,39 +17,14 @@ Meteor.publish('customers.manage', function customersManage(customerId) {
   return Customers.find({ _id: customerId });
 });
 
-
-// publishComposite('customers.readers', function customersReaders(customer) {
-//   check(customer, String);
-
-//   return {
-//     find() {
-//       return Readers.find({ customer: customer }, { sort: { serialNumber: 1 } });
-//     },
-//     children: [{
-//       find(reader) {
-//         return Events.find({ 'message.rdr': reader.serialNumber }, { fields: { 'message.rdr': 1, createdAt: 1 }, limit: 1, sort: { createdAt: -1 } });
-//       },
-//     }],
-//   };
-// });
-
-// Meteor.publish('customers.readers', function customersReaders(customer) {
-//   check(customer, String);
-//   const readers = Readers.find({ customer: customer }, { sort: { serialNumber: 1 } });
-//   return [
-//     readers,
-//     Events.find({ 'message.rdr': { $in: readers.fetch().map(({ serialNumber }) => serialNumber) } }, { fields: { 'message.rdr': 1, createdAt: 1 } }),
-//   ];
-// });
-
 Meteor.publish('customers.beacons', function customersBeacons(customer, beaconTypeCode, beaconSearch) {
   check(customer, String);
   check(beaconTypeCode, Match.OneOf(String, null));
   check(beaconSearch, Match.OneOf(Object, null));
 
-  if (beaconSearch && beaconSearch.type === 'serialNumber') {
+  if (beaconSearch && beaconSearch.type === 'macAddress') {
     const readerEvents = Events.find({ 'message.rdr': new RegExp(beaconSearch.value, 'i') }, { fields: { 'message.rdr': 1, 'message.mac': 1, createdAt: 1 } });
-    const beaconsByMAC = Beacons.find({ customer: customer, macAddress: { $in: readerEvents.fetch().map(({ message }) => message.mac) } }); // Array of macAddresses ['123', '456']
+    const beaconsByMAC = Beacons.find({ customer: customer, macAddress: { $in: readerEvents.fetch().map(({ message }) => message.rdr) } }); // Array of macAddresses ['123', '456']
 
     return [
       Customers.find({ _id: customer }),

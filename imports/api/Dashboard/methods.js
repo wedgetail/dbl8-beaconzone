@@ -19,25 +19,25 @@ Meteor.methods({
       },
     }).fetch();
 
-    const readersSerialNumbersFromEvents = _.uniq(eventsInLastMinute.map((event) => event.message.rdr));
+    const readersFromEvents = _.uniq(eventsInLastMinute.map((event) => event.message.rdr));
     const beaconMacAddressesFromEvents = _.uniq(eventsInLastMinute.map((event) => event.message.mac));
 
 
     console.log('aaa', eventsInLastMinute);
-    console.log('bbb', readersSerialNumbersFromEvents);
+    console.log('bbb', readersFromEvents);
     console.log('ccc', beaconMacAddressesFromEvents);
     console.log('time', moment().subtract(1, 'minute').unix());
 
     console.log({
       createdAt: moment().subtract(1, 'minute').unix() * 1000,
-      readersNotReporting: Readers.find({ serialNumber: { $nin: readersSerialNumbersFromEvents } }).count(),
-      readersReporting: Readers.find({ serialNumber: { $in: readersSerialNumbersFromEvents } }).count(),
+      readersNotReporting: Readers.find({ macAddress: { $nin: readersFromEvents } }).count(),
+      readersReporting: Readers.find({ macAddress: { $in: readersFromEvents } }).count(),
       activeBeacons: Beacons.find({ macAddress: { $in: _.uniq(beaconMacAddressesFromEvents) } }).count(),
     });
 
     return {
-      readersNotReporting: Readers.find({ serialNumber: { $nin: readersSerialNumbersFromEvents } }).count(),
-      readersReporting: Readers.find({ serialNumber: { $in: readersSerialNumbersFromEvents } }).count(),
+      readersNotReporting: Readers.find({ macAddress: { $nin: readersFromEvents } }).count(),
+      readersReporting: Readers.find({ macAddress: { $in: readersFromEvents } }).count(),
       activeBeacons: Beacons.find({ macAddress: { $in: _.uniq(beaconMacAddressesFromEvents) } }).count(),
     }
   },

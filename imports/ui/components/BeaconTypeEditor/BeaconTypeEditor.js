@@ -6,6 +6,7 @@ import { Row, Col, FormGroup, ControlLabel, Button } from 'react-bootstrap';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
 import { Random } from 'meteor/random';
+import ToggleSwitch from '../ToggleSwitch/ToggleSwitch';
 import validate from '../../../modules/validate';
 
 import './BeaconTypeEditor.scss';
@@ -29,8 +30,15 @@ class BeaconTypeEditor extends React.Component {
     super(props);
     const existingParseMapFields = props.beaconType && props.beaconType.parseMapFields;
     this.state = {
-      parseMapFields: existingParseMapFields && existingParseMapFields.length > 0 ? existingParseMapFields : [getBlankParseMapField()]
+      parseMapFields: existingParseMapFields && existingParseMapFields.length > 0 ? existingParseMapFields : [getBlankParseMapField()],
+      hasButton: false,
     };
+  }
+
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.beaconType) {
+      this.setState({ hasButton: nextProps.beaconType.hasButton });
+    }
   }
 
   componentDidMount() {
@@ -68,10 +76,13 @@ class BeaconTypeEditor extends React.Component {
     const methodToCall = existingBeaconType ? 'beaconTypes.update' : 'beaconTypes.insert';
     const beaconType = {
       title: this.title.value.trim(),
+      hasButton: this.state.hasButton,
       description: this.description.value.trim(),
       beaconTypeCode: this.beaconTypeCode.value.trim(),
       parseMapFields: this.state.parseMapFields.filter((parseMapField) => this.isValidParseMapField(parseMapField)),
     };
+
+    console.log(beaconType);
 
     if (existingBeaconType) beaconType._id = existingBeaconType;
 
@@ -128,9 +139,9 @@ class BeaconTypeEditor extends React.Component {
   render() {
     const { beaconType } = this.props;
     return (
-      <form ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
+      <form className="BeaconTypeEditor" ref={form => (this.form = form)} onSubmit={event => event.preventDefault()}>
         <Row>
-          <Col xs={12} sm={8}>
+          <Col xs={12} sm={6}>
             <FormGroup>
               <ControlLabel>Title</ControlLabel>
               <input
@@ -154,6 +165,12 @@ class BeaconTypeEditor extends React.Component {
                 defaultValue={beaconType && beaconType.beaconTypeCode}
                 placeholder="8899"
               />
+            </FormGroup>
+          </Col>
+          <Col xs={12} sm={2}>
+            <FormGroup>
+              <ControlLabel>Button Events?</ControlLabel>
+              <ToggleSwitch toggled={this.state.hasButton} onToggle={(id, toggled) => this.setState({ hasButton: toggled })} />
             </FormGroup>
           </Col>
         </Row>

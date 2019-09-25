@@ -45,19 +45,10 @@ class CustomerDataForm extends React.Component {
   			connectionHost: {
   				required: true,
   			},
-  			connectionPort: {
-  				required: true,
-  			},
   			connectionResource: {
   				required: true,
   			},
   			connectionTopic: {
-  				required: true,
-  			},
-  			connectionUsername: {
-  				required: true,
-  			},
-  			connectionPassword: {
   				required: true,
   			},
   		},
@@ -68,20 +59,11 @@ class CustomerDataForm extends React.Component {
   			connectionHost: {
   				required: 'Need a host domain.',
   			},
-  			connectionPort: {
-  				required: 'Need a port number.',
-  			},
   			connectionResource: {
   				required: 'Need a resource path.',
   			},
   			connectionTopic: {
   				required: 'Need a topic.',
-  			},
-  			connectionUsername: {
-  				required: 'Need a username.',
-  			},
-  			connectionPassword: {
-  				required: 'Need a password.',
   			},
   		},
   		submitHandler() { component.handleSubmit(); },
@@ -105,7 +87,7 @@ class CustomerDataForm extends React.Component {
 							  className="form-control"
 						  >
 						    <option value="http">HTTP</option>
-						    <option value="websocket">WebSocket</option>
+						    {/* <option value="websocket">WebSocket</option> */}
 						    <option value="mqtt">MQTT</option>
 						  </select>
 					  </Col>

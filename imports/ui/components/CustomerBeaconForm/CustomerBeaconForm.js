@@ -76,7 +76,6 @@ class CustomerBeaconForm extends React.Component {
           }}>
             <option value="beaconType">Beacon Type</option>
             <option value="macAddress">MAC Address</option>
-            <option value="serialNumber">Reader Serial Number</option>
           </select>
           {searchType === 'beaconType' ? <div>
             <select name="beaconType" className="form-control" onChange={(event) => { currentBeaconType.set(event.target.value); this.fetchBeaconData(); }}>
@@ -86,13 +85,13 @@ class CustomerBeaconForm extends React.Component {
               ))}
             </select>
           </div> : ''}
-          {searchType === 'macAddress' || searchType === 'serialNumber' ? <div>
+          {searchType === 'macAddress' ? <div>
             <input
               type="search"
               name="beaconSearch"
               className="form-control"
               ref={beaconSearch => (this.beaconSearch = beaconSearch)}
-              placeholder={searchType === 'macAddress' ? 'MAC Address' : 'Reader Serial #'}
+              placeholder="MAC Address"
               onChange={(event) => {
                 event.persist(); // Keeps event around for use within delay function below.
                 delay(() => {
@@ -109,15 +108,16 @@ class CustomerBeaconForm extends React.Component {
               <th>Type</th>
               <th>MAC Address</th>
               <th>Last Seen Date/Time</th>
-              <th>Reader Serial Number</th>
+              <th>Reader MAC Address</th>
             </tr>
           </thead>
           <tbody>
+            {console.log('BEACONS', beacons)}
             {beacons.map(({ _id, beaconType, macAddress, mostRecentEvent }) => (
               <tr key={_id}>
                 <td>{beaconType}</td>
                 <td>{macAddress}</td>
-                <td>{mostRecentEvent && mostRecentEvent.createdAt && moment.unix(mostRecentEvent.createdAt / 1000).format('MMMM Do, YYYY [at] hh:mm a')}</td>
+                <td>{mostRecentEvent && mostRecentEvent.createdAt && moment.unix(mostRecentEvent.createdAt).format('MMMM Do, YYYY [at] hh:mm:ss a')}</td>
                 {/* <td>{mostRecentEvent && mostRecentEvent.createdAt && moment.unix(mostRecentEvent.createdAt / 1000).format('MM/DD/YYYY [at] hh:mm a')}</td> */}
                 <td>{mostRecentEvent && mostRecentEvent.message.rdr}</td>
               </tr>

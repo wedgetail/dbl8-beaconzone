@@ -78,9 +78,9 @@ Meteor.methods({
 
     try {
       let readersAdded = 0;
-      readers.forEach(({ serialNumber, macAddress, ...rest }) => {
-        if (!Readers.findOne({ serialNumber, macAddress })) {
-          Readers.insert({ serialNumber, macAddress, ...rest });
+      readers.forEach(({ macAddress, ...rest }) => {
+        if (!Readers.findOne({ macAddress })) {
+          Readers.insert({ macAddress, ...rest });
           readersAdded += 1;
         }
       });
@@ -129,7 +129,7 @@ Meteor.methods({
 
     try {
       return Readers.find({ customer: customerId }).fetch().map((reader) => {
-        const mostRecentEvent = Events.findOne({ 'message.rdr': reader.serialNumber }, { sort: { createdAt: -1 } });
+        const mostRecentEvent = Events.findOne({ 'message.rdr': reader.macAddress }, { sort: { createdAt: -1 } });
         return {
           ...reader,
           mostRecentEvent: mostRecentEvent ? mostRecentEvent.createdAt : 'N/A',
@@ -146,7 +146,7 @@ Meteor.methods({
     check(beaconSearch, Match.OneOf(Object, null));
 
     try {
-      if (beaconSearch && beaconSearch.type === 'serialNumber') {
+      if (beaconSearch && beaconSearch.type === 'macAddress') {
         const searchRegex = new RegExp(beaconSearch.value, 'i');
         const readerEvents = Events.find({ 'message.rdr': searchRegex }, { fields: { 'message.rdr': 1, 'message.mac': 1, createdAt: 1 } }).fetch();
         const beaconsByMAC = Beacons.find({ customer: customer, macAddress: { $in: _.uniq(readerEvents.map(({ message }) => message.mac)) } }).fetch(); // Array of macAddresses ['123', '456']
@@ -154,7 +154,7 @@ Meteor.methods({
         return {
           customer: Customers.findOne({ _id: customer }),
           beacons: beaconsByMAC.map((beacon) => {
-            const mostRecentEvent = Events.findOne({ 'message.mac': beacon.macAddress, 'message.rdr': searchRegex }, { limit: 1, sort: { createdAt: -1 } });
+            const mostRecentEvent = Events.findOne({ 'message.rdr': searchRegex }, { limit: 1, sort: { createdAt: -1 } });
             return {
               ...beacon,
               mostRecentEvent,

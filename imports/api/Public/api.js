@@ -1,4 +1,5 @@
 import bodyParser from 'body-parser';
+import moment from 'moment';
 import { Picker } from 'meteor/meteorhacks:picker';
 import Events from '../Events/Events';
 import Customers from '../Customers/Customers';
@@ -13,14 +14,27 @@ const eventViewerDataConnectionString = Meteor.settings.private.eventViewerData.
 const getCustomerBeacons = (customer) => {
   return Beacons.find({ customer: customer }, { fields: { whitelisted: 0 } }).fetch()
     .map((beacon) => {
-      console.log('beacon', beacon);
-      const beaconType = BeaconTypes.findOne({ beaconTypeCode: beacon.beaconType }, { fields: { title: 1 } });
-      const lastEvent = Events.findOne({ 'message.mac': beacon.macAddress }, { limit: 1, sort: { createdAt: -1 } });
-      console.log(lastEvent);
+      // NOTE: beacon.beaconType is stored as a number (this is correct) but beaconTypeCode stores that same value as a string
+      // because it's entered via text input. Cast as string here to avoid false negatives.
+      const beaconType = BeaconTypes.findOne({ beaconTypeCode: `${beacon.beaconType}` }, { fields: { title: 1, beaconTypeCode: 1, hasButton: 1 } });
+      const lastEvent = Events.findOne({ 'message.mac': beacon.macAddress, 'message.maj': beacon.beaconType }, { limit: 1, sort: { createdAt: -1 } });
+
+      console.log({
+        ...beacon,
+        beaconTypeText: beaconType ? beaconType.title : 'N/A',
+        hasButton: beaconType && beaconType.hasButton,
+        currentReader: lastEvent && lastEvent.message && lastEvent.message.rdr || null, // The mac address of the reader that last saw this beacon.
+        lastEventId: lastEvent && lastEvent._id,
+        lastSeen: lastEvent && lastEvent.createdAt || null,
+        packetValues: lastEvent && lastEvent.message,
+      });
+
       return {
         ...beacon,
-        beaconType: beaconType ? beaconType.title : 'N/A',
-        currentReader: lastEvent && lastEvent.message && lastEvent.message.rdr || null, // The serial number of the reader that last saw this beacon.
+        beaconTypeText: beaconType ? beaconType.title : 'N/A',
+        hasButton: beaconType && beaconType.hasButton,
+        currentReader: lastEvent && lastEvent.message && lastEvent.message.rdr || null, // The mac address of the reader that last saw this beacon.
+        lastEventId: lastEvent && lastEvent._id,
         lastSeen: lastEvent && lastEvent.createdAt || null,
         packetValues: lastEvent && lastEvent.message,
       };
@@ -366,16 +380,45 @@ Picker.route('/api/customers/beacons', (params, request, response) => {
   if (request.method === 'PUT') {
     if (!request.body.userId) handleError(response, 403, 'Please pass a userId param with your request (or else!).');
     if (!request.body.beaconMacAddress) handleError(response, 403, 'Please pass a beaconMacAddress param with your request (or else!).');
+    if (!request.body.beaconType) handleError(response, 403, 'Please pass a beaconType param with your request (or else!).');
     if (!request.body.update) handleError(response, 403, 'Please pass an update param with your request (or else!).');
+
+    console.log('UPDATE', request.body);
 
     const customer = Customers.findOne({ 'users.userId': request.body.userId }, { fields: { _id: 1 } });
 
     if (customer) {
-      Beacons.update({ macAddress: request.body.beaconMacAddress }, { $set: request.body.update });
+      Beacons.update({ macAddress: request.body.beaconMacAddress, beaconType: request.body.beaconType }, { $set: request.body.update });
       response.writeHead(200);
       response.end('Beacon updated');
     } else {
       handleError(response, 404, 'Sorry, we couldn\'t find a customer with your userId.');
     }
+  }
+});
+
+Picker.route('/api/customers/beacons/reset', (params, request, response) => {
+  // console.log('REQUEST IS HERE (BEFORE AUTH)');
+  checkApiKey(params.query.apiKey, response);
+
+  // console.log('REQUEST IS HERE (AFTER AUTH)');
+  if (request.method === 'POST') {
+    if (!request.body.eventId) handleError(response, 403, 'Please pass an eventId param with your request (or else!).');
+
+    // console.log('UPDATE', request.body);
+    // Update all events for this major with 10001.
+    Events.update(
+      { _id: request.body.eventId },
+      {
+        $set: {
+          'message.min': 10001,
+          'message.btn': 10001,
+          'message.btnResetAt': Math.round(new Date().getTime()/1000),
+        }
+      },
+    );
+
+    response.writeHead(200);
+    response.end('Beacon updated');
   }
 });

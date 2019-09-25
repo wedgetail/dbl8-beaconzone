@@ -23,13 +23,12 @@ const BeaconsSchema = new SimpleSchema({
     label: 'Is this beacon recognized (or ignored) by the customer receiving its events?',
   },
   beaconType: {
-    type: String,
+    type: Number,
     label: 'The type of beacon.',
   },
   macAddress: {
     type: String,
     label: 'The mac address for this beacon.',
-    unique: true,
   },
   customer: {
     type: String,

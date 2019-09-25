@@ -88,6 +88,15 @@ const EventsSchema = new SimpleSchema({
     label: 'A unique value for this event (concat various field values).',
     optional: true,
   },
+  'message.btn': {
+    type: Number,
+    label: 'Is the button pressed (10000 === yes) or not (10001 === reset by user).',
+    optional: true,
+  },'message.btnResetAt': {
+    type: Number,
+    label: 'Is the Date/Time that the button press was reset by user.',
+    optional: true,
+  },
 });
 
 Events.attachSchema(EventsSchema);

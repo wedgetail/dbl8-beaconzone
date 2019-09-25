@@ -7,6 +7,7 @@ Meteor.methods({
   'beaconTypes.insert': function beaconTypesInsert(beaconType) {
     check(beaconType, {
       title: String,
+      hasButton: Boolean,
       description: String,
       beaconTypeCode: String,
       parseMapFields: [Object],
@@ -22,6 +23,7 @@ Meteor.methods({
     check(beaconType, {
       _id: String,
       title: String,
+      hasButton: Boolean,
       description: String,
       beaconTypeCode: String,
       parseMapFields: [Object],

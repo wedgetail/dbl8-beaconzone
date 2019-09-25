@@ -41,6 +41,11 @@ BeaconTypes.schema = new SimpleSchema({
     label: 'The code for the beacon type.',
     unique: true,
   },
+  hasButton: {
+    type: Boolean,
+    label: 'Does this beacon have a button event?',
+    defaultValue: false,
+  },
   description: {
     type: String,
     label: 'The description of the beacon type.',

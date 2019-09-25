@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { ControlLabel, Table, Button } from 'react-bootstrap';
 import Papa from 'papaparse';
+import moment from 'moment';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Meteor } from 'meteor/meteor';
 import { Bert } from 'meteor/themeteorchef:bert';
@@ -114,19 +115,17 @@ class CustomerReaderForm extends React.Component {
     			<tr>
             <th>Active?</th>
     				<th>Custom JSON</th>
-    				<th>Serial Number</th>
     				<th>MAC Address</th>
     				<th>Last Event Received</th>
     			</tr>
     		</thead>
     		<tbody>
-          {this.state.readers.map(({ _id, active, customJSON, serialNumber, macAddress, mostRecentEvent }) => (
+          {this.state.readers.map(({ _id, active, customJSON, macAddress, mostRecentEvent }) => (
             <tr>
               <td><ToggleSwitch id={_id} toggled={active} onLabel="Yes" offLabel="No" onToggle={(readerId, isReaderActive) => this.handleUpdateReaderStatus({ _id: readerId, active: isReaderActive })} /></td>
               <td><a href="#">{customJSON ? <Button bsStyle="info" onClick={() => this.setState({ showEditJSONModal: 'custom', jsonToEdit: customJSON, readerId: _id })}>Edit Custom JSON</Button> : <Button bsStyle="success" onClick={() => this.setState({ showEditJSONModal: 'custom', jsonToEdit: '', readerId: _id })}>Add Custom JSON</Button>}</a></td>
-              <td>{serialNumber}</td>
               <td>{macAddress}</td>
-              <td>{mostRecentEvent !== 'N/A' ? monthDayYearAtTime(mostRecentEvent) : 'No events yet'}</td>
+              <td>{mostRecentEvent !== 'N/A' ? moment.unix(mostRecentEvent).format('MMMM Do, YYYY [at] hh:mm:ss a') : 'No events yet'}</td>
             </tr>
           ))}
     		</tbody>

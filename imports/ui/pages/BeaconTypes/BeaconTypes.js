@@ -37,6 +37,7 @@ const BeaconTypes = ({
           <tr>
             <th>Title</th>
             <th>Major</th>
+            <th>Button Events</th>
             <th>Last Updated</th>
             <th>Created</th>
             <th />
@@ -44,11 +45,12 @@ const BeaconTypes = ({
         </thead>
         <tbody>
           {beaconTypes.map(({
-            _id, title, beaconTypeCode, createdAt, updatedAt,
+            _id, title, hasButton, beaconTypeCode, createdAt, updatedAt,
           }) => (
             <tr key={_id}>
               <td>{title}</td>
               <td>{beaconTypeCode}</td>
+              <td className="text-center">{hasButton ? <strong>Yes</strong> : 'No'}</td>
               <td>{timeago(updatedAt)}</td>
               <td>{monthDayYearAtTime(createdAt)}</td>
               <td className="text-right">
