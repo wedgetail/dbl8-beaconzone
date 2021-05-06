@@ -19,7 +19,7 @@
     "jquery": "^2.2.4",
     "jquery-validation": "^1.17.0",
     "juice": "^4.2.2",
-    "lodash": "^4.17.4",
+    "lodash": "^4.17.21",
     "meteor-node-stubs": "^0.3.2",
     "moment": "^2.19.3",
     "moment-timezone": "^0.5.14",
