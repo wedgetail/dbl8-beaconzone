@@ -22,7 +22,7 @@
     "lodash": "^4.17.4",
     "meteor-node-stubs": "^0.3.2",
     "moment": "^2.19.3",
-    "moment-timezone": "^0.5.14",
+    "moment-timezone": "^0.5.35",
     "mongodb": "^3.1.9",
     "mqtt": "^2.15.2",
     "node-slack": "0.0.7",
